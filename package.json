@@ -1,9 +1,9 @@
 {
-	"name": "{{ tmplr.repo_name }}",
+	"name": "emblaze",
 	"version": "{{ tmplr.version }}",
-	"description": "{{ tmplr.description }}",
+	"description": "A minimal, fast and responsive reddit client",
 	"main": "src/index.ts",
-	"author": "{{ tmplr.author_name }} <{{ tmplr.author_email }}>",
+	"author": "nicholas-roether <35772525+nicholas-roether@users.noreply.github.com>",
 	"license": "MIT",
 	"packageManager": "yarn@3.2.4",
 	"scripts": {
