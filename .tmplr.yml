@@ -1,0 +1,28 @@
+steps:
+  - read: repo_name
+    prompt: "Project Name:"
+    default:
+      from: filesystem.rootdir
+  - read: description
+    prompt: "Project Description:"
+    default: "A really cool react app :)"
+  - read: author_name
+    from: git.author_name
+    fallback:
+      prompt: "Author Name:"
+  - read: author_email
+    from: git.author_email
+    fallback:
+      prompt: "Author Email:"
+  - remove: LICENSE
+  - remove: README.md
+  - copy: .template/LICENSE
+    to: LICENSE
+  - copy: .template/README.md
+    to: README.md
+  - remove: .template
+  - update: package.json
+  - update: public/index.html
+  - update: LICENSE
+  - update: README.md
+  - remove: .tmplr.yml

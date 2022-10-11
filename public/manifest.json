@@ -1,0 +1,6 @@
+{
+	"short_name": "{{ tmplr.repo_name }}",
+	"name": "{{ tmplr.repo_name }}",
+	"start_url": ".",
+	"display": "standalone"
+}
