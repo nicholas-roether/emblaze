@@ -7,7 +7,7 @@ import theme from "./theme";
 function App(): JSX.Element {
 	return (
 		<ThemeProvider theme={theme}>
-			<Logo />
+			<Logo css={{ width: "50px", height: "50px" }} />
 			<Heading size="xl">XL Heading</Heading>
 			<Heading size="l">L Heading</Heading>
 			<Heading size="m">M Heading</Heading>

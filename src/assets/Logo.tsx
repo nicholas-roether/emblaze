@@ -1,4 +1,6 @@
-function Icon(): JSX.Element {
+import { BaseProps } from "../utils/types";
+
+function Icon({ ...props }: BaseProps<SVGSVGElement>): JSX.Element {
 	return (
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
@@ -7,6 +9,7 @@ function Icon(): JSX.Element {
 			height="512"
 			version="1.1"
 			viewBox="0 0 512 512"
+			{...props}
 		>
 			<defs>
 				<linearGradient id="linearGradient2583">
