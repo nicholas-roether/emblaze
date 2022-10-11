@@ -1,4 +1,5 @@
 import { ThemeProvider } from "@emotion/react";
+import Logo from "./assets/Logo";
 import Heading from "./components/typography/Heading";
 import Paragraph from "./components/typography/Paragraph";
 import theme from "./theme";
@@ -6,6 +7,7 @@ import theme from "./theme";
 function App(): JSX.Element {
 	return (
 		<ThemeProvider theme={theme}>
+			<Logo />
 			<Heading size="xl">XL Heading</Heading>
 			<Heading size="l">L Heading</Heading>
 			<Heading size="m">M Heading</Heading>
