@@ -1,6 +1,6 @@
 {
-	"short_name": "{{ tmplr.repo_name }}",
-	"name": "{{ tmplr.repo_name }}",
+	"short_name": "emblaze",
+	"name": "emblaze for reddit",
 	"start_url": ".",
 	"display": "standalone"
 }
