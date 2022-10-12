@@ -1,3 +1,5 @@
 **/*.pnp.*
 **/*.mjs
 .yarn/*
+node_modules
+build
