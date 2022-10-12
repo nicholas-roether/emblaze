@@ -1,5 +1,6 @@
 import { ThemeProvider } from "@emotion/react";
-import Logo from "./assets/Logo";
+import Icon from "./assets/Icon";
+import TopBar from "./components/page/TopBar";
 import Heading from "./components/typography/Heading";
 import Paragraph from "./components/typography/Paragraph";
 import theme from "./theme";
@@ -7,7 +8,8 @@ import theme from "./theme";
 function App(): JSX.Element {
 	return (
 		<ThemeProvider theme={theme}>
-			<Logo css={{ width: "50px", height: "50px" }} />
+			<TopBar />
+			<Icon css={{ width: "50px", height: "50px" }} />
 			<Heading size="xl">XL Heading</Heading>
 			<Heading size="l">L Heading</Heading>
 			<Heading size="m">M Heading</Heading>
