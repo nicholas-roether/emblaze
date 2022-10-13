@@ -1,5 +1,6 @@
 import { useTheme } from "@emotion/react";
-import { FiSearch as SearchIcon } from "react-icons/fi";
+import { FiSearch } from "react-icons/fi";
+import Icon from "../lib/Icon";
 import Text from "../lib/typography/Text";
 
 function SearchBar(): JSX.Element {
@@ -26,12 +27,7 @@ function SearchBar(): JSX.Element {
 			>
 				Search reddit...
 			</Text>
-			<SearchIcon
-				css={{
-					width: 20,
-					height: 20
-				}}
-			/>
+			<Icon color={theme.colors.background[900]}>{FiSearch}</Icon>
 		</div>
 	);
 }

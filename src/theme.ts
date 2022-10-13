@@ -42,11 +42,11 @@ const theme: Theme = createTheme({
 		xl: 1200
 	},
 	iconSizes: {
-		xs: "0.7em",
-		s: "0.85em",
-		m: "1em",
-		l: "1.3em",
-		xl: "1.6em"
+		xs: "0.84em",
+		s: "1.02em",
+		m: "1.2em",
+		l: "1.56em",
+		xl: "1.92em"
 	}
 });
 

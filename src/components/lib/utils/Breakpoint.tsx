@@ -1,8 +1,8 @@
 import { useTheme } from "@emotion/react";
 import { Size } from "../../../theme";
-import { BaseProps } from "../../../utils/types";
+import { BasePropsWithChildren } from "../../../utils/types";
 
-interface BreakpointProps extends BaseProps<HTMLDivElement> {
+interface BreakpointProps extends BasePropsWithChildren<HTMLDivElement> {
 	above: Size;
 	below: Size;
 }

@@ -10,7 +10,7 @@ export type RefProps<T> = { ref?: RefObject<T> };
 export type BaseProps<T> = CSSProps &
 	RefProps<T> &
 	RefProps<T> &
-	HTMLAttributes<T>;
+	Omit<HTMLAttributes<T>, "children">;
 
 export type BasePropsWithChildren<T> = BaseProps<T> & ChildrenProps;
 
