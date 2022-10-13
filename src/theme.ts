@@ -40,6 +40,13 @@ const theme: Theme = createTheme({
 		m: 768,
 		l: 992,
 		xl: 1200
+	},
+	iconSizes: {
+		xs: "0.7em",
+		s: "0.85em",
+		m: "1em",
+		l: "1.3em",
+		xl: "1.6em"
 	}
 });
 

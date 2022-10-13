@@ -22,6 +22,7 @@ interface ThemeData {
 		paragraph: Record<Size, string>;
 	};
 	breakpoints: Record<Size, number>;
+	iconSizes: Record<Size, string>;
 }
 
 class MediaQuery {
