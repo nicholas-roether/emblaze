@@ -1,45 +1,38 @@
 import { useTheme } from "@emotion/react";
 import { FiSearch as SearchIcon } from "react-icons/fi";
+import Text from "../typography/Text";
 
 function SearchBar(): JSX.Element {
 	const theme = useTheme();
 	return (
-		<span
+		<div
 			css={{
-				position: "relative",
-				top: 0,
-				left: 0,
-				flex: 1,
 				display: "flex",
+				flex: 1,
 				alignItems: "center",
-				maxWidth: theme.spacing * 200
+				maxWidth: theme.spacing(200),
+				padding: theme.spacing(3, 6),
+				cursor: "text",
+				userSelect: "none",
+				backgroundColor: theme.colors.background[600],
+				borderRadius: "100000px"
 			}}
 		>
-			<input
-				type="text"
-				placeholder="Search reddit..."
+			<Text
 				css={{
-					backgroundColor: theme.colors.background[600],
-					padding: `${theme.spacing * 3}px ${theme.spacing * 12}px ${
-						theme.spacing * 3
-					}px ${theme.spacing * 6}px`,
-					width: "100%",
-					fontSize: theme.textSize.paragraph.m,
-					border: "none",
-					borderRadius: `1000000px`,
-					color: theme.colors.onBackground
+					color: theme.colors.background[900],
+					flex: 1
 				}}
-			/>
+			>
+				Search reddit...
+			</Text>
 			<SearchIcon
 				css={{
-					position: "absolute",
-					stroke: theme.colors.background[900],
-					right: theme.spacing * 6,
 					width: 20,
 					height: 20
 				}}
 			/>
-		</span>
+		</div>
 	);
 }
 
