@@ -1,8 +1,8 @@
 import { ThemeProvider } from "@emotion/react";
 import Icon from "./assets/Icon";
 import TopBar from "./components/page/TopBar";
-import Heading from "./components/typography/Heading";
-import Paragraph from "./components/typography/Paragraph";
+import Heading from "./components/lib/typography/Heading";
+import Paragraph from "./components/lib/typography/Paragraph";
 import theme from "./theme";
 
 function App(): JSX.Element {

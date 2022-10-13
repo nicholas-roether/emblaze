@@ -1,6 +1,6 @@
 import { useTheme } from "@emotion/react";
 import Icon from "../../assets/Icon";
-import Heading from "../typography/Heading";
+import Heading from "../lib/typography/Heading";
 import SearchBar from "./SearchBar";
 
 function Logo(): JSX.Element {

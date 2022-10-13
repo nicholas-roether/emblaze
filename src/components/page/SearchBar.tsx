@@ -1,6 +1,6 @@
 import { useTheme } from "@emotion/react";
 import { FiSearch as SearchIcon } from "react-icons/fi";
-import Text from "../typography/Text";
+import Text from "../lib/typography/Text";
 
 function SearchBar(): JSX.Element {
 	const theme = useTheme();

@@ -1,6 +1,6 @@
 import { useTheme } from "@emotion/react";
-import { Size } from "../../theme";
-import { BasePropsWithChilren } from "../../utils/types";
+import { Size } from "../../../theme";
+import { BasePropsWithChilren } from "../../../utils/types";
 
 interface ParagraphProps extends BasePropsWithChilren<HTMLHeadingElement> {
 	size?: Size;
