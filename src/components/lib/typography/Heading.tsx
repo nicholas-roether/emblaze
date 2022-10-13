@@ -1,8 +1,8 @@
 import { useTheme } from "@emotion/react";
 import { Size } from "../../../theme";
-import { BasePropsWithChilren } from "../../../utils/types";
+import { BasePropsWithChildren } from "../../../utils/types";
 
-interface ParagraphProps extends BasePropsWithChilren<HTMLHeadingElement> {
+interface ParagraphProps extends BasePropsWithChildren<HTMLHeadingElement> {
 	size?: Size;
 	gutter?: boolean;
 }

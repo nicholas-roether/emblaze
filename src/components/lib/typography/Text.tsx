@@ -1,8 +1,8 @@
 import { useTheme } from "@emotion/react";
 import { Size } from "../../../theme";
-import { BasePropsWithChilren } from "../../../utils/types";
+import { BasePropsWithChildren } from "../../../utils/types";
 
-interface TextProps extends BasePropsWithChilren<HTMLSpanElement> {
+interface TextProps extends BasePropsWithChildren<HTMLSpanElement> {
 	size?: Size;
 }
 

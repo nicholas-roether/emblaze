@@ -12,6 +12,6 @@ export type BaseProps<T> = CSSProps &
 	RefProps<T> &
 	HTMLAttributes<T>;
 
-export type BasePropsWithChilren<T> = BaseProps<T> & ChildrenProps;
+export type BasePropsWithChildren<T> = BaseProps<T> & ChildrenProps;
 
 export type OverrideUnion<B, O> = O & Pick<B, Exclude<keyof B, keyof O>>;
