@@ -43,7 +43,14 @@ function Button({ variant = "primary", children, css, ...props }: ButtonProps) {
 				}
 			}}
 		>
-			<Text css={{ color: theme.colors.onPrimary }}>{children}</Text>
+			<Text
+				size="l"
+				css={{
+					color: theme.colors.onPrimary
+				}}
+			>
+				{children}
+			</Text>
 		</button>
 	);
 }

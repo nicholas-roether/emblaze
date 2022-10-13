@@ -16,7 +16,17 @@ function SearchBar(): JSX.Element {
 				cursor: "text",
 				userSelect: "none",
 				backgroundColor: theme.colors.background[600],
-				borderRadius: "100000px"
+				borderRadius: "100000px",
+
+				[theme.media.below("s")]: {
+					position: "fixed",
+					bottom: theme.spacing(2),
+					left: theme.spacing(4),
+					right: theme.spacing(4),
+					maxWidth: theme.spacing(100),
+					boxShadow: "0 0 20px 1px #000",
+					margin: "auto"
+				}
 			}}
 		>
 			<Text
