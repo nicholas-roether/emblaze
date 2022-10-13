@@ -23,6 +23,7 @@ interface ThemeData {
 	};
 	breakpoints: Record<Size, number>;
 	iconSizes: Record<Size, string>;
+	borderRadius: string;
 }
 
 class MediaQuery {

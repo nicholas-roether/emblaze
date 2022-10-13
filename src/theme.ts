@@ -47,7 +47,8 @@ const theme: Theme = createTheme({
 		m: "1.2em",
 		l: "1.56em",
 		xl: "1.92em"
-	}
+	},
+	borderRadius: "7px"
 });
 
 export default theme;

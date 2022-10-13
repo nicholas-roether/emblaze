@@ -2,6 +2,7 @@ import { useTheme } from "@emotion/react";
 import Icon from "../../assets/Icon";
 import Heading from "../lib/typography/Heading";
 import SearchBar from "./SearchBar";
+import UserSection from "./UserSection";
 
 function Logo(): JSX.Element {
 	const theme = useTheme();
@@ -19,11 +20,6 @@ function Logo(): JSX.Element {
 	);
 }
 
-function TopBarMenu(): JSX.Element {
-	const theme = useTheme();
-	return <span css={{ width: theme.spacing(60) }} />;
-}
-
 function TopBar(): JSX.Element {
 	const theme = useTheme();
 	return (
@@ -39,7 +35,7 @@ function TopBar(): JSX.Element {
 		>
 			<Logo />
 			<SearchBar />
-			<TopBarMenu />
+			<UserSection />
 		</section>
 	);
 }
