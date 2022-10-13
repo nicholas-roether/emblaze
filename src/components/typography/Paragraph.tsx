@@ -1,16 +1,15 @@
 import { useTheme } from "@emotion/react";
-import { TextSize } from "../../theme";
+import { Size } from "../../theme";
 import { BasePropsWithChilren } from "../../utils/types";
 
 interface ParagraphProps extends BasePropsWithChilren<HTMLParagraphElement> {
-	size?: TextSize;
+	size?: Size;
 }
 
 function Paragraph({
 	size = "m",
 	css,
 	children,
-	ref,
 	...props
 }: ParagraphProps): JSX.Element {
 	const theme = useTheme();
@@ -23,7 +22,6 @@ function Paragraph({
 				marginBottom: theme.spacing * 6,
 				...css
 			}}
-			ref={ref}
 			{...props}
 		>
 			{children}

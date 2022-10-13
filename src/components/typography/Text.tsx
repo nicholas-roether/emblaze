@@ -1,18 +1,12 @@
 import { useTheme } from "@emotion/react";
-import { TextSize } from "../../theme";
+import { Size } from "../../theme";
 import { BasePropsWithChilren } from "../../utils/types";
 
 interface TextProps extends BasePropsWithChilren<HTMLSpanElement> {
-	size?: TextSize;
+	size?: Size;
 }
 
-function Text({
-	size = "m",
-	css,
-	children,
-	ref,
-	...props
-}: TextProps): JSX.Element {
+function Text({ size = "m", css, children, ...props }: TextProps): JSX.Element {
 	const theme = useTheme();
 	return (
 		<span
@@ -22,7 +16,6 @@ function Text({
 				color: theme.colors.onBackground,
 				...css
 			}}
-			ref={ref}
 			{...props}
 		>
 			{children}

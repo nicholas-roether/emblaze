@@ -1,7 +1,7 @@
 import { Theme } from "@emotion/react";
 import { ColorShades, shades } from "./utils/color";
 
-type TextSize = "xs" | "s" | "m" | "l" | "xl";
+type Size = "xs" | "s" | "m" | "l" | "xl";
 
 declare module "@emotion/react" {
 	interface Theme {
@@ -19,9 +19,10 @@ declare module "@emotion/react" {
 		};
 		spacing: number;
 		textSize: {
-			heading: Record<TextSize, string>;
-			paragraph: Record<TextSize, string>;
+			heading: Record<Size, string>;
+			paragraph: Record<Size, string>;
 		};
+		breakpoints: Record<Size, number>;
 	}
 }
 
@@ -54,9 +55,16 @@ const theme: Theme = {
 			l: "1.3em",
 			xl: "1.6em"
 		}
+	},
+	breakpoints: {
+		xs: 0,
+		s: 576,
+		m: 768,
+		l: 992,
+		xl: 1200
 	}
 };
 
 export default theme;
 
-export type { TextSize };
+export type { Size };

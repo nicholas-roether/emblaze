@@ -27,7 +27,7 @@ const shadeMap: Record<ColorShade, number> = {
 
 function hexToRGB(hex: string): [r: number, g: number, b: number] {
 	hex = hex.replace(/^#/, "");
-	if (hex.length != 6) throw new Error("Only RGB hex colors are supported!");
+	if (hex.length !== 6) throw new Error("Only RGB hex colors are supported!");
 	const colorAsInt = Number.parseInt(hex, 16);
 	return [colorAsInt >> 16, (colorAsInt >> 8) % 256, colorAsInt % 256];
 }

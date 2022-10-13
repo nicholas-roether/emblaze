@@ -1,9 +1,9 @@
 import { useTheme } from "@emotion/react";
-import { TextSize } from "../../theme";
+import { Size } from "../../theme";
 import { BasePropsWithChilren } from "../../utils/types";
 
 interface ParagraphProps extends BasePropsWithChilren<HTMLHeadingElement> {
-	size?: TextSize;
+	size?: Size;
 	gutter?: boolean;
 }
 
@@ -12,7 +12,6 @@ function Heading({
 	gutter = true,
 	css,
 	children,
-	ref,
 	...props
 }: ParagraphProps): JSX.Element {
 	const theme = useTheme();
@@ -25,7 +24,6 @@ function Heading({
 				marginBottom: gutter ? theme.spacing * 2 : 0,
 				...css
 			}}
-			ref={ref}
 			{...props}
 		>
 			{children}
