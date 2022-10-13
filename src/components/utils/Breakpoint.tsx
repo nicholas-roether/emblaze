@@ -1,5 +1,5 @@
+import { useTheme } from "@emotion/react";
 import { Size } from "../../theme";
-import { useMediaQuery } from "../../utils/media_query";
 import { BaseProps } from "../../utils/types";
 
 interface BreakpointProps extends BaseProps<HTMLDivElement> {
@@ -14,14 +14,14 @@ function Breakpoint({
 	children,
 	...props
 }: BreakpointProps): JSX.Element {
-	const media = useMediaQuery();
+	const theme = useTheme();
 	return (
 		<div
 			css={{
-				[media.below(above)]: {
+				[theme.media.below(above)]: {
 					display: "none"
 				},
-				[media.above(below)]: {
+				[theme.media.above(below)]: {
 					display: "none"
 				},
 				...css

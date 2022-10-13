@@ -19,7 +19,7 @@ function Paragraph({
 				fontFamily: theme.fonts.paragraph,
 				fontSize: theme.textSize.paragraph[size],
 				color: theme.colors.onBackground,
-				marginBottom: theme.spacing * 6,
+				marginBottom: theme.spacing(6),
 				...css
 			}}
 			{...props}

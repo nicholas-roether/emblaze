@@ -21,7 +21,7 @@ function Heading({
 				fontFamily: theme.fonts.heading,
 				fontSize: theme.textSize.heading[size],
 				color: theme.colors.onBackground,
-				marginBottom: gutter ? theme.spacing * 2 : 0,
+				marginBottom: gutter ? theme.spacing(2) : 0,
 				...css
 			}}
 			{...props}

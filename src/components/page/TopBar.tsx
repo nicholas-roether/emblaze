@@ -12,7 +12,7 @@ function Logo(): JSX.Element {
 			}}
 		>
 			<Icon css={{ width: "48px", height: "48px" }} />
-			<Heading size="l" gutter={false} css={{ marginLeft: theme.spacing * 2 }}>
+			<Heading size="l" gutter={false} css={{ marginLeft: theme.spacing(2) }}>
 				emblaze
 			</Heading>
 		</span>
@@ -21,7 +21,7 @@ function Logo(): JSX.Element {
 
 function TopBarMenu(): JSX.Element {
 	const theme = useTheme();
-	return <span css={{ width: theme.spacing * 60 }} />;
+	return <span css={{ width: theme.spacing(60) }} />;
 }
 
 function TopBar(): JSX.Element {
@@ -33,8 +33,8 @@ function TopBar(): JSX.Element {
 				display: "flex",
 				alignItems: "center",
 				justifyContent: "space-between",
-				columnGap: theme.spacing * 4,
-				padding: `${theme.spacing}px ${theme.spacing * 8}px`
+				columnGap: theme.spacing(4),
+				padding: theme.spacing(1, 8)
 			}}
 		>
 			<Logo />

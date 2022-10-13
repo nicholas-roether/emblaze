@@ -1,32 +1,10 @@
 import { Theme } from "@emotion/react";
-import { ColorShades, shades } from "./utils/color";
+import { shades } from "./utils/color";
+import { createTheme } from "./utils/theming";
 
 type Size = "xs" | "s" | "m" | "l" | "xl";
 
-declare module "@emotion/react" {
-	interface Theme {
-		colors: {
-			primary: ColorShades;
-			secondary: ColorShades;
-			background: ColorShades;
-			onPrimary: string;
-			onSecondary: string;
-			onBackground: string;
-		};
-		fonts: {
-			heading: string;
-			paragraph: string;
-		};
-		spacing: number;
-		textSize: {
-			heading: Record<Size, string>;
-			paragraph: Record<Size, string>;
-		};
-		breakpoints: Record<Size, number>;
-	}
-}
-
-const theme: Theme = {
+const theme: Theme = createTheme({
 	colors: {
 		primary: shades("#fd6b10"),
 		secondary: shades("#ffe285"),
@@ -39,7 +17,7 @@ const theme: Theme = {
 		heading: "'Crimson Text', serif",
 		paragraph: "'Work Sans', serif"
 	},
-	spacing: 4,
+	spacingFactor: 4,
 	textSize: {
 		heading: {
 			xs: "1.2em",
@@ -63,7 +41,7 @@ const theme: Theme = {
 		l: 992,
 		xl: 1200
 	}
-};
+});
 
 export default theme;
 
