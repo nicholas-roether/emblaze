@@ -27,7 +27,7 @@ interface ThemeData {
 }
 
 class MediaQuery {
-	private breakpoints: Record<Size, number>;
+	private readonly breakpoints: Record<Size, number>;
 
 	constructor(breakpoints: Record<Size, number>) {
 		this.breakpoints = breakpoints;

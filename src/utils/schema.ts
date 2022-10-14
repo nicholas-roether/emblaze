@@ -1,11 +1,11 @@
 interface Validator<T> {
-	type: string | null;
+	readonly type: string | null;
 	check(val: unknown): val is T;
 }
 
 abstract class SchemaCondition<C, R extends C> implements Validator<R> {
-	private base: Validator<C>;
-	type: string | null;
+	private readonly base: Validator<C>;
+	readonly type: string | null;
 
 	constructor(base: Validator<C>, type: string | null = null) {
 		this.base = base;
@@ -37,7 +37,7 @@ abstract class SchemaCondition<C, R extends C> implements Validator<R> {
 }
 
 class OptionCondition<C, O extends C> extends SchemaCondition<C, C & O> {
-	private options: O[];
+	private readonly options: O[];
 
 	constructor(base: Validator<C>, options: O[]) {
 		super(base);
@@ -53,7 +53,7 @@ class OptionCondition<C, O extends C> extends SchemaCondition<C, C & O> {
 }
 
 class ExactCondition<C, T extends C> extends SchemaCondition<C, T> {
-	private value: T;
+	private readonly value: T;
 
 	constructor(base: Validator<C>, value: T) {
 		super(base);
@@ -94,7 +94,7 @@ class NumberSchema extends TypeSchema<number> {
 }
 
 class UnionSchema<T> extends TypeSchema<T> {
-	private options: Validator<T>[];
+	private readonly options: Validator<T>[];
 
 	constructor(options: Validator<T>[]) {
 		super(null);
@@ -112,7 +112,7 @@ class UnionSchema<T> extends TypeSchema<T> {
 type ObjectFieldValidators<T> = { [K in keyof T]: Validator<T[K]> };
 
 class ObjectSchema<T extends Record<string, unknown>> extends TypeSchema<T> {
-	private fieldValidators: ObjectFieldValidators<T>;
+	private readonly fieldValidators: ObjectFieldValidators<T>;
 
 	constructor(fields: ObjectFieldValidators<T>) {
 		super("object");
