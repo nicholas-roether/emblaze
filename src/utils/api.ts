@@ -158,6 +158,9 @@ class Api {
 	private static logError(ctx: ApiContext, error: unknown) {
 		const route = ctx.req.url!;
 		console.error(`Api error in ${route}: ${error}`);
+		if (error instanceof Error) {
+			console.error(error.stack);
+		}
 	}
 }
 
