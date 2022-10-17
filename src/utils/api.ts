@@ -143,7 +143,8 @@ class Api {
 		switch (responseType) {
 			case "html":
 				ctx.res.redirect(
-					this.ERROR_ENDPOINT + `?status=${status}&message=${message}`
+					this.ERROR_ENDPOINT +
+						`?status=${status}&message=${encodeURIComponent(message)}`
 				);
 				break;
 			case "json":
