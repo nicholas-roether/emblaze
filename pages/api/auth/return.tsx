@@ -21,8 +21,14 @@ function handleError(ctx: ApiContext, error: string) {
 	}
 }
 
+function removeURLHash(ctx: ApiContext) {
+	ctx.req.url = ctx.req.url?.split("#")?.[0];
+}
+
 const Return = Api.get(
 	async (ctx) => {
+		removeURLHash(ctx);
+
 		if (!querySchema.check(ctx.req.query))
 			throw new ApiError(400, "Unexpected response format");
 		if ("error" in ctx.req.query) handleError(ctx, ctx.req.query.error);
