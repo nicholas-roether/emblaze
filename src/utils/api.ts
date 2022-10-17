@@ -142,7 +142,7 @@ class Api {
 			status = error.status;
 			message = error.message;
 		}
-		if (status >= 500) this.logError(ctx, error);
+		this.logError(ctx, error);
 
 		ctx.res.status(status);
 		switch (responseType) {
