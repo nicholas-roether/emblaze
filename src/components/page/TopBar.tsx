@@ -57,6 +57,8 @@ function TopBar(): JSX.Element {
 				padding: theme.spacing(2, 3),
 				background: theme.colors.background[500],
 				boxShadow: floating ? "0 0 24px #000" : "none",
+				transition: "box-shadow",
+				transitionDuration: theme.durations.long,
 
 				[theme.media.above("m")]: {
 					paddingLeft: theme.spacing(8),
