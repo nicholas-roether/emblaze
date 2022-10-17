@@ -29,8 +29,7 @@ interface AuthorizationResponse {
 class OAuth {
 	private static readonly ENDPOINT = "https://www.reddit.com/api/v1";
 	private static readonly CLIENT_ID = process.env.REDDIT_CLIENT_ID!;
-	private static readonly REDIRECT_URL =
-		process.env.HOST! + "/api/auth/redirect";
+	private static readonly REDIRECT_URL = process.env.HOST! + "/api/auth/return";
 	private static readonly OAUTH_SCOPE =
 		"account edit flair history identity mysubreddits read report save submit subscribe vote wikiread";
 
@@ -78,21 +77,24 @@ class OAuth {
 	private static async getAccessToken(
 		code: string
 	): Promise<AccessTokenResponse> {
-		const res = await axios.post(
-			`${this.ENDPOINT}/access_token`,
-			`grant_type=authorization_code&code=${code}&redirect_uri=${this.REDIRECT_URL}`
-		);
-		if (res.status !== 200) throw new Error("Failed to get access token");
-		const data = JSON.parse(res.data);
-		if (!accessTokenResSchema.check(data))
-			throw new Error("Unexpected response to access token request");
-		return {
-			accessToken: data.access_token,
-			refreshToken: data.refresh_token,
-			expiresAt: new Date(data.expires_in * 1000),
-			scope: data.scope,
-			tokenType: data.token_type
-		};
+		try {
+			const res = await axios.post(
+				`${this.ENDPOINT}/access_token`,
+				`grant_type=authorization_code&code=${code}&redirect_uri=${this.REDIRECT_URL}`
+			);
+			const data = JSON.parse(res.data);
+			if (!accessTokenResSchema.check(data))
+				throw new Error("Unexpected response to access token request");
+			return {
+				accessToken: data.access_token,
+				refreshToken: data.refresh_token,
+				expiresAt: new Date(data.expires_in * 1000),
+				scope: data.scope,
+				tokenType: data.token_type
+			};
+		} catch (err) {
+			throw new Error("Failed to get access token", { cause: err });
+		}
 	}
 
 	private static async generateSessionSecret(session: IronSession) {

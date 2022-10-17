@@ -21,7 +21,7 @@ function handleError(ctx: ApiContext, error: string) {
 	}
 }
 
-const Redirect = Api.get(
+const Return = Api.get(
 	async (ctx) => {
 		if (!querySchema.check(ctx.req.query))
 			throw new ApiError(400, "Unexpected response format");
@@ -37,4 +37,4 @@ const Redirect = Api.get(
 	{ responseType: "html" }
 );
 
-export default Redirect;
+export default Return;
