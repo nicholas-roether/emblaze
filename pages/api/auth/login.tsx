@@ -1,9 +1,9 @@
-import { NextApiHandler } from "next/types";
 import OAuth from "../../../src/services/oauth";
+import { Api } from "../../../src/utils/api";
 
-const Login: NextApiHandler = async (req, res) => {
-	if (req.method !== "GET") return res.status(405).end();
-	await OAuth.login(req, res);
-};
+const Login = Api.get(async (ctx) => {
+	const loginUri = await OAuth.createLoginUri(ctx.session);
+	ctx.res.redirect(loginUri);
+});
 
 export default Login;

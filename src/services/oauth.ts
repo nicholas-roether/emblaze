@@ -1,12 +1,13 @@
-import { NextApiRequest, NextApiResponse } from "next/types";
-import DB, { Session } from "./db";
 import crypto from "crypto";
 import axios from "axios";
 import schema from "../utils/schema";
+import { IronSession } from "iron-session";
+import { ApiError } from "../utils/api";
+import DB from "./db";
 
 const accessTokenResSchema = schema.object({
 	access_token: schema.string(),
-	token_type: schema.string().exact("bearer"),
+	token_type: schema.string(),
 	expires_in: schema.number().integer(),
 	scope: schema.string(),
 	refresh_token: schema.string()
@@ -16,6 +17,13 @@ interface AccessTokenResponse {
 	accessToken: string;
 	expiresAt: Date;
 	refreshToken: string;
+	tokenType: string;
+	scope: string;
+}
+
+interface AuthorizationResponse {
+	accessCode: string;
+	state: string;
 }
 
 class OAuth {
@@ -25,48 +33,46 @@ class OAuth {
 		process.env.HOST! + "/api/auth/redirect";
 	private static readonly OAUTH_SCOPE =
 		"account edit flair history identity mysubreddits read report save submit subscribe vote wikiread";
-	private static readonly SESSION_LIFETIME = 3600000;
 
-	static async login(req: NextApiRequest, res: NextApiResponse) {
-		const session = await this.createSession(req, res);
+	static async createLoginUri(session: IronSession): Promise<string> {
+		await this.generateSessionSecret(session);
 
 		const authUrl = new URL(this.ENDPOINT + "/authorize");
 		authUrl.searchParams.set("client_id", this.CLIENT_ID);
 		authUrl.searchParams.set("response_type", "code");
-		authUrl.searchParams.set("state", session.secret);
+		authUrl.searchParams.set("state", session.secret!);
 		authUrl.searchParams.set("redirect_uri", this.REDIRECT_URL);
 		authUrl.searchParams.set("duration", "permanent");
 		authUrl.searchParams.set("scope", this.OAUTH_SCOPE);
-
-		res.redirect(authUrl.toString());
-		res.end();
+		return authUrl.toString();
 	}
 
-	static async handleRedirect(req: NextApiRequest, res: NextApiResponse) {
-		const { error, code, state } = req.query;
-		if (error) {
-			console.error(error);
-			return res.status(400).end();
+	static async authorize(
+		response: AuthorizationResponse,
+		session: IronSession
+	) {
+		if (response.state !== session.secret) {
+			throw new ApiError(401, "Invalid OAuth state");
 		}
-		if (!code) return res.status(400).end();
 
-		const session = await this.getSession(req);
-		if (!session || state !== session.secret) return res.status(403).end();
+		const res = await this.getAccessToken(response.accessCode);
+		if (res.tokenType !== "bearer") throw new Error("Unknown token type");
+		if (!this.scopesMatch(res.scope, this.OAUTH_SCOPE)) {
+			throw new Error("Missing required permissions");
+		}
 
-		const { accessToken, refreshToken, expiresAt } = await this.getAccessToken(
-			code.toString()
-		);
-
-		const userId = await DB.createUser({
-			accessToken,
-			refreshToken,
-			expiresAt: expiresAt,
-			scope: this.OAUTH_SCOPE
-		});
-		await this.createSession(req, res, userId);
-
-		res.setHeader("Set-Cookie", `userId=${userId}; Path=/; HttpOnly; Secure`);
-		res.end();
+		try {
+			const userId = await DB.createUser({
+				accessToken: res.accessToken,
+				refreshToken: res.refreshToken,
+				expiresAt: res.expiresAt,
+				scope: res.scope
+			});
+			session.user = userId;
+			await session.save();
+		} catch (err) {
+			throw new Error("Failed to write user to database", { cause: err });
+		}
 	}
 
 	private static async getAccessToken(
@@ -83,46 +89,24 @@ class OAuth {
 		return {
 			accessToken: data.access_token,
 			refreshToken: data.refresh_token,
-			expiresAt: new Date(data.expires_in * 1000)
+			expiresAt: new Date(data.expires_in * 1000),
+			scope: data.scope,
+			tokenType: data.token_type
 		};
 	}
 
-	private static async getSession(
-		req: NextApiRequest
-	): Promise<Session | null> {
-		const sessionId = req.cookies.sessionId;
-		if (sessionId) {
-			const session = await DB.getSession(sessionId);
-			if (session) return session;
-		}
-		return null;
+	private static async generateSessionSecret(session: IronSession) {
+		const secret = crypto.randomUUID();
+		session.secret = secret;
+		await session.save();
 	}
 
-	private static async createSession(
-		req: NextApiRequest,
-		res: NextApiResponse,
-		userId?: string
-	): Promise<Session> {
-		const prevSession = await this.getSession(req);
-		if (prevSession) {
-			if (prevSession.user) userId ??= prevSession.user.id;
-			await DB.deleteSession(prevSession.id);
-		}
-		userId ??= req.cookies.user;
-		const sessionId = await DB.createSession({
-			user: userId,
-			secret: this.generateSessionSecret(),
-			expiresAt: new Date(Date.now() + this.SESSION_LIFETIME)
-		});
-		res.setHeader(
-			"Set-Cookie",
-			`sessionId=${sessionId}; Path=/; HttpOnly; Secure`
+	private static scopesMatch(given: string, required: string) {
+		const givenScopesArray = given.split(" ");
+		const requiredScopesArray = required.split(" ");
+		return requiredScopesArray.every((scope) =>
+			givenScopesArray.includes(scope)
 		);
-		return (await DB.getSession(sessionId))!;
-	}
-
-	private static generateSessionSecret(): string {
-		return crypto.randomUUID();
 	}
 }
 

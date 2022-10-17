@@ -1,9 +1,40 @@
-import { NextApiHandler } from "next/types";
 import OAuth from "../../../src/services/oauth";
+import { Api, ApiContext, ApiError } from "../../../src/utils/api";
+import schema from "../../../src/utils/schema";
 
-const Login: NextApiHandler = async (req, res) => {
-	if (req.method !== "GET") return res.status(405).end();
-	await OAuth.handleRedirect(req, res);
-};
+const querySchema = schema.union<
+	{ error: string } | { code: string; state: string }
+>(
+	schema.object({
+		error: schema.string()
+	}),
+	schema.object({
+		code: schema.string(),
+		state: schema.string()
+	})
+);
 
-export default Login;
+function handleError(ctx: ApiContext, error: string) {
+	if (error === "access_denied") ctx.res.redirect("/");
+	else {
+		throw new ApiError(500, `Authentication failed: ${error}`);
+	}
+}
+
+const Redirect = Api.get(
+	async (ctx) => {
+		if (!querySchema.check(ctx.req.query))
+			throw new ApiError(400, "Unexpected response format");
+		if ("error" in ctx.req.query) handleError(ctx, ctx.req.query.error);
+		else {
+			await OAuth.authorize(
+				{ accessCode: ctx.req.query.code, state: ctx.req.query.state },
+				ctx.session
+			);
+			ctx.res.redirect("/");
+		}
+	},
+	{ responseType: "html" }
+);
+
+export default Redirect;

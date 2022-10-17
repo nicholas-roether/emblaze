@@ -1,15 +1,38 @@
 import { NextApiHandler, NextApiRequest, NextApiResponse } from "next/types";
 import Cookies from "cookies";
+import { getIronSession, IronSession } from "iron-session";
+
+declare module "iron-session" {
+	interface IronSessionData {
+		secret?: string;
+		user?: string;
+	}
+}
 
 class ApiContext {
 	readonly req: NextApiRequest;
 	readonly res: NextApiResponse;
 	readonly cookies: Cookies;
+	private _session: IronSession | null = null;
 
 	constructor(req: NextApiRequest, res: NextApiResponse) {
 		this.req = req;
 		this.res = res;
 		this.cookies = new Cookies(req, res);
+	}
+
+	get session(): IronSession {
+		if (!this._session)
+			throw new Error("API context has not been initialized yet!");
+		return this._session;
+	}
+
+	async init() {
+		this._session = await getIronSession(this.req, this.res, {
+			cookieName: "emblaze-session",
+			password: process.env.COOKIE_PASSWORD!,
+			cookieOptions: { secure: process.env.NODE_ENV === "production" }
+		});
 	}
 }
 
@@ -17,8 +40,8 @@ class ApiError extends Error {
 	readonly status: number;
 	readonly message: string;
 
-	constructor(status: number, message: string) {
-		super(`HTTP ${status}: ${message}`);
+	constructor(status: number, message: string, options?: ErrorOptions) {
+		super(`HTTP ${status}: ${message}`, options);
 		this.status = status;
 		this.message = message;
 	}
@@ -59,10 +82,11 @@ class Api {
 	): NextApiHandler {
 		config.responseType ??= "json";
 		config.allowHead ??= true;
-		return (req, res) => {
+		return async (req, res) => {
 			const ctx = new ApiContext(req, res);
 			try {
-				const body = this.executeCallback(config, ctx, callback);
+				await ctx.init();
+				const body = await this.executeCallback(config, ctx, callback);
 				this.handleBody(ctx, body, config.responseType!);
 			} catch (err) {
 				this.handleError(ctx, err, config.responseType!);
@@ -70,11 +94,11 @@ class Api {
 		};
 	}
 
-	private static executeCallback(
+	private static async executeCallback(
 		config: ApiHandlerConfig,
 		ctx: ApiContext,
 		callback: ApiHandlerCallback
-	): unknown {
+	): Promise<unknown> {
 		if (
 			ctx.req.method !== config.method &&
 			(!config.allowHead || ctx.req.method !== "HEAD")
@@ -84,7 +108,7 @@ class Api {
 				`This resource can only be accessed via a ${config.method} request.`
 			);
 		}
-		return callback(ctx);
+		return await callback(ctx);
 	}
 
 	private static handleBody(
