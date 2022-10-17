@@ -137,8 +137,12 @@ class OAuth {
 					}
 				}
 			);
-			if (accessTokenRefreshResSchema.check(res.data))
-				throw new Error("Unexpected response to access token refresh request");
+			if (accessTokenRefreshResSchema.check(res.data)) {
+				throw new Error(
+					"Unexpected response to access token refresh request: " +
+						JSON.stringify(res.data)
+				);
+			}
 			return {
 				accessToken: res.data.access_token,
 				expiresAt: new Date(Date.now() + res.data.expires_in * 1000),
