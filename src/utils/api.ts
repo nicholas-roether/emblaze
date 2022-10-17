@@ -32,7 +32,10 @@ class ApiContext {
 		this._session = await getIronSession(this.req, this.res, {
 			cookieName: "emblaze-session",
 			password: process.env.COOKIE_PASSWORD!,
-			cookieOptions: { secure: process.env.NODE_ENV === "production" }
+			cookieOptions: {
+				secure: process.env.NODE_ENV === "production",
+				domain: process.env.COOKIE_DOMAIN
+			}
 		});
 		await DB.connect();
 	}
