@@ -80,7 +80,13 @@ class OAuth {
 		try {
 			const res = await axios.post(
 				`${this.ENDPOINT}/access_token`,
-				`grant_type=authorization_code&code=${code}&redirect_uri=${this.REDIRECT_URL}`
+				`grant_type=authorization_code&code=${code}&redirect_uri=${this.REDIRECT_URL}`,
+				{
+					auth: {
+						username: process.env.REDDIT_CLIENT_ID!,
+						password: process.env.REDDIT_CLIENT_SECRET!
+					}
+				}
 			);
 			const data = JSON.parse(res.data);
 			if (!accessTokenResSchema.check(data))
