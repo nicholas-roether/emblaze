@@ -48,7 +48,14 @@ const theme: Theme = createTheme({
 		l: "1.56em",
 		xl: "1.92em"
 	},
-	borderRadius: "7px"
+	borderRadius: "7px",
+	durations: {
+		veryShort: "50ms",
+		short: "125ms",
+		medium: "200ms",
+		long: "350ms",
+		veryLong: "500ms"
+	}
 });
 
 export default theme;

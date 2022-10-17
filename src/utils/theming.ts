@@ -2,6 +2,7 @@ import { Theme } from "@emotion/react";
 import { ColorShades } from "./color";
 
 type Size = "xs" | "s" | "m" | "l" | "xl";
+type Duration = "veryShort" | "short" | "medium" | "long" | "veryLong";
 
 interface ThemeData {
 	colors: {
@@ -24,6 +25,7 @@ interface ThemeData {
 	breakpoints: Record<Size, number>;
 	iconSizes: Record<Size, string>;
 	borderRadius: string;
+	durations: Record<Duration, string>;
 }
 
 class MediaQuery {

@@ -31,6 +31,8 @@ function Button({ variant = "primary", children, css, ...props }: ButtonProps) {
 				cursor: "pointer",
 				backgroundColor: bgColor?.[500] ?? "transparent",
 				border: `2px ${bgColor?.[500] ?? "transparent"} solid`,
+				transition: "border-color",
+				transitionDuration: theme.durations.medium,
 				color: textColor,
 				borderRadius: theme.borderRadius,
 
