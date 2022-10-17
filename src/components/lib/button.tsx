@@ -1,13 +1,22 @@
 import { useTheme } from "@emotion/react";
+import { MouseEvent } from "react";
 import { ColorShades } from "../../utils/color";
 import { BasePropsWithChildren } from "../../utils/types";
 import Text from "./typography/Text";
 
 interface ButtonProps extends BasePropsWithChildren<HTMLButtonElement> {
 	variant?: "primary" | "secondary" | "text";
+	href?: string;
 }
 
-function Button({ variant = "primary", children, css, ...props }: ButtonProps) {
+function Button({
+	variant = "primary",
+	children,
+	css,
+	href,
+	onClick,
+	...props
+}: ButtonProps) {
 	const theme = useTheme();
 	let textColor: string;
 	let bgColor: ColorShades | null = null;
@@ -23,6 +32,14 @@ function Button({ variant = "primary", children, css, ...props }: ButtonProps) {
 		case "text":
 			textColor = theme.colors.onPrimary;
 	}
+
+	const clickHandler = href
+		? (evt: MouseEvent<HTMLButtonElement>) => {
+				onClick?.(evt);
+				if (!evt.defaultPrevented) window.location.href = href;
+		  }
+		: onClick;
+
 	return (
 		<button
 			css={{
@@ -44,6 +61,8 @@ function Button({ variant = "primary", children, css, ...props }: ButtonProps) {
 					backgroundColor: bgColor?.[600]
 				}
 			}}
+			onClick={clickHandler}
+			{...props}
 		>
 			<Text
 				size="l"
