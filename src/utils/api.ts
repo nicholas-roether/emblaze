@@ -162,9 +162,20 @@ class Api {
 
 	private static logError(ctx: ApiContext, error: unknown) {
 		const route = ctx.req.url!;
-		console.error(`Api error in ${route}: ${error}`);
 		if (error instanceof Error) {
+			console.log(`${error.name} in ${route}: ${error.message}`);
 			console.error(error.stack);
+			if (error.cause) this.logErrorCause(error.cause);
+		} else {
+			console.error(`Error in ${route}: ${error}`);
+		}
+	}
+
+	private static logErrorCause(cause: unknown) {
+		console.log(`Caused by: ${cause}`);
+		if (cause instanceof Error) {
+			console.error(cause.stack);
+			if (cause.cause) this.logErrorCause(cause.cause);
 		}
 	}
 }
