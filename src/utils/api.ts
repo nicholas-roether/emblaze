@@ -1,6 +1,7 @@
 import { NextApiHandler, NextApiRequest, NextApiResponse } from "next/types";
 import Cookies from "cookies";
 import { getIronSession, IronSession } from "iron-session";
+import DB from "../services/db";
 
 declare module "iron-session" {
 	interface IronSessionData {
@@ -33,6 +34,7 @@ class ApiContext {
 			password: process.env.COOKIE_PASSWORD!,
 			cookieOptions: { secure: process.env.NODE_ENV === "production" }
 		});
+		await DB.connect();
 	}
 }
 

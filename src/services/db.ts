@@ -18,8 +18,6 @@ const userSchema = new mongoose.Schema<UserSchema>({
 
 const UserModel = mongoose.model("user", userSchema);
 
-mongoose.connect(process.env.MONGODB_URI!);
-
 interface User {
 	id: string;
 	accessToken: string;
@@ -29,6 +27,11 @@ interface User {
 }
 
 class DB {
+	static async connect(): Promise<void> {
+		if (mongoose.connection.readyState === 0)
+			await mongoose.connect(process.env.MONGODB_URI!);
+	}
+
 	static async createUser(doc: UserSchema): Promise<string> {
 		const user = new UserModel(doc);
 		await user.save();
