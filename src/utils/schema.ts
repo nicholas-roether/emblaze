@@ -121,7 +121,7 @@ class ObjectSchema<T extends Record<string, unknown>> extends TypeSchema<T> {
 
 	protected condition(val: T): val is T {
 		if (val == null) return false;
-		for (let key in val) {
+		for (let key in this.fieldValidators) {
 			if (!this.fieldValidators[key].check(val[key])) return false;
 		}
 		return true;
