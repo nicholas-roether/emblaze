@@ -88,8 +88,8 @@ class OAuth {
 					}
 				}
 			);
+			console.log(res.data);
 			const data = JSON.parse(res.data);
-			console.log(data);
 			if (!accessTokenResSchema.check(data))
 				throw new Error("Unexpected response to access token request");
 			return {
