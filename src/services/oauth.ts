@@ -123,7 +123,7 @@ class OAuth {
 					}
 				}
 			);
-			if (accessTokenResSchema.check(res.data))
+			if (!accessTokenResSchema.check(res.data))
 				throw new Error("Unexpected response to access token refresh request");
 			return {
 				accessToken: res.data.access_token,
