@@ -93,7 +93,7 @@ class OAuth {
 			return {
 				accessToken: res.data.access_token,
 				refreshToken: res.data.refresh_token,
-				expiresAt: new Date(res.data.expires_in * 1000),
+				expiresAt: new Date(Date.now() + res.data.expires_in * 1000),
 				scope: res.data.scope,
 				tokenType: res.data.token_type
 			};
