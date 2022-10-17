@@ -88,16 +88,14 @@ class OAuth {
 					}
 				}
 			);
-			console.log(res.data);
-			const data = JSON.parse(res.data);
-			if (!accessTokenResSchema.check(data))
+			if (!accessTokenResSchema.check(res.data))
 				throw new Error("Unexpected response to access token request");
 			return {
-				accessToken: data.access_token,
-				refreshToken: data.refresh_token,
-				expiresAt: new Date(data.expires_in * 1000),
-				scope: data.scope,
-				tokenType: data.token_type
+				accessToken: res.data.access_token,
+				refreshToken: res.data.refresh_token,
+				expiresAt: new Date(res.data.expires_in * 1000),
+				scope: res.data.scope,
+				tokenType: res.data.token_type
 			};
 		} catch (err) {
 			throw new Error("Failed to get access token", { cause: err });
