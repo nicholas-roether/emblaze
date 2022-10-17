@@ -13,24 +13,10 @@ const accessTokenResSchema = schema.object({
 	refresh_token: schema.string()
 });
 
-const accessTokenRefreshResSchema = schema.object({
-	access_token: schema.string(),
-	token_type: schema.string(),
-	expires_in: schema.number().integer(),
-	scope: schema.string()
-});
-
 interface AccessTokenResponse {
 	accessToken: string;
 	expiresAt: Date;
 	refreshToken: string;
-	tokenType: string;
-	scope: string;
-}
-
-interface AccessTokenRefreshResponse {
-	accessToken: string;
-	expiresAt: Date;
 	tokenType: string;
 	scope: string;
 }
@@ -125,7 +111,7 @@ class OAuth {
 
 	private static async refreshAccessToken(
 		refreshToken: string
-	): Promise<AccessTokenRefreshResponse> {
+	): Promise<AccessTokenResponse> {
 		try {
 			const res = await axios.post(
 				`${this.ENDPOINT}/access_token`,
@@ -137,17 +123,14 @@ class OAuth {
 					}
 				}
 			);
-			if (accessTokenRefreshResSchema.check(res.data)) {
-				throw new Error(
-					"Unexpected response to access token refresh request: " +
-						JSON.stringify(res.data)
-				);
-			}
+			if (accessTokenResSchema.check(res.data))
+				throw new Error("Unexpected response to access token refresh request");
 			return {
 				accessToken: res.data.access_token,
 				expiresAt: new Date(Date.now() + res.data.expires_in * 1000),
 				scope: res.data.scope,
-				tokenType: res.data.token_type
+				tokenType: res.data.token_type,
+				refreshToken: res.data.refresh_token
 			};
 		} catch (err) {
 			throw new Error("Failed to refresh access token", { cause: err });
