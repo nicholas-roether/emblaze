@@ -128,6 +128,12 @@ class ObjectSchema<T extends Record<string, unknown>> extends TypeSchema<T> {
 	}
 }
 
+class UndefinedSchema extends TypeSchema<undefined> {
+	constructor() {
+		super("undefined");
+	}
+}
+
 const schema = {
 	string(): StringSchema {
 		return new StringSchema();
@@ -143,8 +149,16 @@ const schema = {
 		return new ObjectSchema(fields);
 	},
 
+	undefined(): UndefinedSchema {
+		return new UndefinedSchema();
+	},
+
 	union<T>(...options: Validator<T>[]) {
 		return new UnionSchema(options);
+	},
+
+	optional<T>(validator: Validator<T>): UnionSchema<T | undefined> {
+		return schema.union(schema.undefined(), validator);
 	}
 };
 
