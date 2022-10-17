@@ -1,5 +1,5 @@
 import crypto from "crypto";
-import axios from "axios";
+import axios, { AxiosRequestConfig } from "axios";
 import schema from "../utils/schema";
 import { IronSession } from "iron-session";
 import { ApiError } from "../utils/api";
@@ -13,10 +13,24 @@ const accessTokenResSchema = schema.object({
 	refresh_token: schema.string()
 });
 
+const accessTokenRefreshResSchema = schema.object({
+	access_token: schema.string(),
+	token_type: schema.string(),
+	expires_in: schema.number().integer(),
+	scope: schema.string()
+});
+
 interface AccessTokenResponse {
 	accessToken: string;
 	expiresAt: Date;
 	refreshToken: string;
+	tokenType: string;
+	scope: string;
+}
+
+interface AccessTokenRefreshResponse {
+	accessToken: string;
+	expiresAt: Date;
 	tokenType: string;
 	scope: string;
 }
@@ -71,6 +85,68 @@ class OAuth {
 			await session.save();
 		} catch (err) {
 			throw new Error("Failed to write user to database", { cause: err });
+		}
+	}
+
+	static async authenticateRequest(
+		session: IronSession
+	): Promise<AxiosRequestConfig> {
+		const userId = session.user;
+		if (!userId) throw new ApiError(401, "Not logged in");
+		const user = await DB.getUser(userId);
+		if (!user || !this.scopesMatch(user.scope, this.OAUTH_SCOPE)) {
+			session.destroy();
+			throw new ApiError(401, "Not logged in");
+		}
+		if (user.expiresAt.getTime() < Date.now())
+			return this.createAuthHeader(user.accessToken);
+		return await this.refreshAuth(user.id, user.refreshToken);
+	}
+
+	private static async refreshAuth(
+		userId: string,
+		refreshToken: string
+	): Promise<AxiosRequestConfig> {
+		const res = await this.refreshAccessToken(refreshToken);
+		if (res.tokenType !== "bearer") throw new Error("Unknown token type");
+		if (!this.scopesMatch(res.scope, this.OAUTH_SCOPE))
+			throw new Error("Missing required permissions");
+		await DB.updateUserLogin(userId, res.accessToken, res.expiresAt);
+		return this.createAuthHeader(res.accessToken);
+	}
+
+	private static createAuthHeader(accessToken: string): AxiosRequestConfig {
+		return {
+			headers: {
+				Authorization: `bearer ${accessToken}`
+			}
+		};
+	}
+
+	private static async refreshAccessToken(
+		refreshToken: string
+	): Promise<AccessTokenRefreshResponse> {
+		try {
+			const res = await axios.post(
+				`${this.ENDPOINT}/access_token`,
+				`grant_type=refresh_token&refresh_token=${refreshToken}`,
+				{
+					auth: {
+						username: process.env.REDDIT_CLIENT_ID!,
+						password: process.env.REDDIT_CLIENT_SECRET!
+					}
+				}
+			);
+			if (accessTokenRefreshResSchema.check(res.data))
+				throw new Error("Unexpected response to access token refresh request");
+			return {
+				accessToken: res.data.access_token,
+				expiresAt: new Date(Date.now() + res.data.expires_in * 1000),
+				scope: res.data.scope,
+				tokenType: res.data.token_type
+			};
+		} catch (err) {
+			throw new Error("Failed to refresh access token", { cause: err });
 		}
 	}
 
