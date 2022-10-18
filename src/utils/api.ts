@@ -55,7 +55,7 @@ class ApiError extends Error {
 type ResponseType = "html" | "json" | "raw";
 
 interface ApiHandlerConfig {
-	method: string;
+	method?: string;
 	responseType?: ResponseType;
 	allowHead?: boolean;
 }
@@ -83,7 +83,7 @@ class Api {
 
 	static handler(
 		callback: ApiHandlerCallback,
-		config: ApiHandlerConfig
+		config: ApiHandlerConfig = {}
 	): NextApiHandler {
 		config.responseType ??= "json";
 		config.allowHead ??= true;
@@ -105,6 +105,7 @@ class Api {
 		callback: ApiHandlerCallback
 	): Promise<unknown> {
 		if (
+			config.method &&
 			ctx.req.method !== config.method &&
 			(!config.allowHead || ctx.req.method !== "HEAD")
 		) {

@@ -5,9 +5,10 @@ import OAuth from "./oauth";
 class Reddit {
 	static readonly ENDPOINT = "https://oauth.reddit.com/api/v1";
 
-	static async me(session: IronSession): Promise<unknown> {
+	static async test(session: IronSession, href: string): Promise<unknown> {
+		const url = new URL(href, this.ENDPOINT);
 		const res = await axios.get(
-			this.ENDPOINT + "/me",
+			url.toString(),
 			await OAuth.authenticateRequest(session)
 		);
 		return res.data;
