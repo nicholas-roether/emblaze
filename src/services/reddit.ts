@@ -7,6 +7,7 @@ class Reddit {
 
 	static async test(session: IronSession, href: string): Promise<unknown> {
 		const url = new URL(href, this.ENDPOINT);
+		url.searchParams.set("raw_json", "1");
 		const res = await axios.get(
 			url.toString(),
 			await OAuth.authenticateRequest(session)
