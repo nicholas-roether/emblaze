@@ -1,17 +1,29 @@
 import crypto from "crypto";
 import axios, { AxiosRequestConfig } from "axios";
-import schema from "../utils/schema";
+import schema, { Validator } from "../utils/schema";
 import { IronSession } from "iron-session";
 import { ApiError } from "../utils/api";
 import DB from "./db";
 
-const accessTokenResSchema = schema.object({
-	access_token: schema.string(),
-	token_type: schema.string(),
-	expires_in: schema.number().integer(),
-	scope: schema.string(),
-	refresh_token: schema.string()
-});
+interface RedditAccessTokenResponse {
+	access_token: string;
+	token_type: string;
+	expires_in: number;
+	scope: string;
+	refresh_token: string;
+}
+
+const redditAccessTokenResValidator: Validator<RedditAccessTokenResponse> =
+	schema.object(
+		{
+			access_token: schema.string(),
+			token_type: schema.string(),
+			expires_in: schema.number().integer(),
+			scope: schema.string(),
+			refresh_token: schema.string()
+		},
+		"accessTokenResponse"
+	);
 
 interface AccessTokenResponse {
 	accessToken: string;
@@ -27,7 +39,7 @@ interface AuthorizationResponse {
 }
 
 class OAuth {
-	private static readonly ENDPOINT = "https://www.reddit.com/api/v1";
+	private static readonly ENDPOINT = process.env.REDDIT_AUTH_API!;
 	private static readonly CLIENT_ID = process.env.REDDIT_CLIENT_ID!;
 	private static readonly REDIRECT_URL = process.env.HOST! + "/api/auth/return";
 	private static readonly OAUTH_SCOPE =
@@ -123,8 +135,10 @@ class OAuth {
 					}
 				}
 			);
-			if (!accessTokenResSchema.check(res.data))
-				throw new Error("Unexpected response to access token refresh request");
+			redditAccessTokenResValidator.assertOr(
+				res.data,
+				new Error("Unexpected response to access token refresh request")
+			);
 			return {
 				accessToken: res.data.access_token,
 				expiresAt: new Date(Date.now() + res.data.expires_in * 1000),
@@ -151,8 +165,10 @@ class OAuth {
 					}
 				}
 			);
-			if (!accessTokenResSchema.check(res.data))
-				throw new Error("Unexpected response to access token request");
+			redditAccessTokenResValidator.assertOr(
+				res.data,
+				new Error("Unexpected response to access token request")
+			);
 			return {
 				accessToken: res.data.access_token,
 				refreshToken: res.data.refresh_token,
