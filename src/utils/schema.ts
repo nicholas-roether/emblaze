@@ -191,9 +191,10 @@ class ArraySchema<T extends unknown[]> extends TypeSchema<T> {
 
 	protected condition(val: unknown): val is T {
 		if (!Array.isArray(val)) return false;
-		for (const item in val) {
+		val.forEach((item, i) => {
+			this.valueValidator.name = `${this.name}[${i}]`;
 			this.valueValidator.assert(item);
-		}
+		});
 		return true;
 	}
 }
