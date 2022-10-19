@@ -149,19 +149,31 @@ class NumberSchema extends TypeSchema<number> {
 	}
 }
 
-class UnionSchema<T> extends TypeSchema<T> {
+class UnionSchema<T> extends SchemaCondition<unknown, T> {
 	private readonly options: Validator<T>[];
 
 	constructor(options: Validator<T>[], name = "union") {
-		super(null, name);
+		super(new BaseValidator(), "No option was matched", null, name ?? "union");
 		this.options = options;
 	}
 
-	protected condition(val: T): val is T {
+	protected condition(val: T, name?: string): val is T {
+		const errors: AssertionError[] = [];
+
 		for (const option of this.options) {
-			if (option.check(val)) return true;
+			try {
+				option.assert(val, name);
+				return true;
+			} catch (err) {
+				if (err instanceof AssertionError) errors.push(err);
+				else throw err;
+			}
 		}
-		return false;
+		let errMsg = "No option in union was matched.\n";
+		errors.forEach((err, i) => {
+			errMsg += `\tOption ${i}: ${err.message}\n`;
+		});
+		throw new AssertionError(errMsg);
 	}
 }
 
@@ -213,6 +225,16 @@ class UndefinedSchema extends TypeSchema<undefined> {
 	}
 }
 
+class AnySchema extends SchemaCondition<unknown, {}> {
+	constructor() {
+		super(new BaseValidator(), "Expected a value");
+	}
+
+	protected condition(val: unknown, name: string): val is {} {
+		return !!val;
+	}
+}
+
 const schema = {
 	string(name?: string): StringSchema {
 		return new StringSchema(name);
@@ -236,6 +258,10 @@ const schema = {
 
 	optional<T>(validator: Validator<T>): UnionSchema<T | undefined> {
 		return schema.union([schema.undefined(), validator]);
+	},
+
+	any(): Validator<{}> {
+		return new AnySchema();
 	},
 
 	array<T>(values: Validator<T>, name?: string): ArraySchema<T[]> {
