@@ -37,7 +37,9 @@ function UserProfile({ user }: UserProfileProps): JSX.Element {
 	);
 
 	if (!user)
-		return <div css={{ padding: theme.spacing(1, 3) }}>userProfileContent</div>;
+		return (
+			<div css={{ padding: theme.spacing(1, 3) }}>{userProfileContent}</div>
+		);
 
 	return (
 		<Button variant="text" padding="s">
