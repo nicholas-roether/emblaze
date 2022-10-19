@@ -1,4 +1,4 @@
-import schema from "./utils/schema";
+import schema, { Validator } from "./utils/schema";
 
 interface User {
 	name: string;
@@ -13,17 +13,20 @@ interface User {
 	};
 }
 
-const userSchema = schema.object({
-	name: schema.string(),
-	displayName: schema.string(),
-	profilePicture: schema.string(),
-	created: schema.number().integer(),
-	karma: schema.object({
-		post: schema.number().integer(),
-		comment: schema.number().integer(),
-		awardee: schema.number().integer(),
-		awarder: schema.number().integer()
-	})
-});
+const userSchema: Validator<User> = schema.object(
+	{
+		name: schema.string(),
+		displayName: schema.string(),
+		profilePicture: schema.string(),
+		created: schema.number().integer(),
+		karma: schema.object({
+			post: schema.number().integer(),
+			comment: schema.number().integer(),
+			awardee: schema.number().integer(),
+			awarder: schema.number().integer()
+		})
+	},
+	"user"
+);
 
 export {};
