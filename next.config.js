@@ -1,7 +1,11 @@
 module.exports = {
 	reactStrictMode: true,
 	images: {
-		domains: ["reddit.com"],
-		formats: ["image/webp", "image/png", "image/jpg"]
+		remotePatterns: {
+			protocol: "styles.redditmedia.com",
+			hostname: "reddit.com",
+			port: "",
+			pathname: "/**"
+		}
 	}
 };
