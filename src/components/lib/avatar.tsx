@@ -1,22 +1,22 @@
-import { BasePropsWithChildren } from "../../utils/types";
+import Image from "next/image";
+import { BaseProps } from "../../utils/types";
 
-interface AvatarProps extends BasePropsWithChildren<HTMLDivElement> {
-	size: string;
+interface AvatarProps extends BaseProps<HTMLDivElement> {
+	width: string;
+	src: string;
 }
 
-function Avatar({ size, children, css, ...props }: AvatarProps): JSX.Element {
+function Avatar({ width, src, css, ...props }: AvatarProps): JSX.Element {
 	return (
 		<div
 			css={{
 				display: "inline-block",
-				width: size,
-				height: size,
 				borderRadius: "100%",
 				...css
 			}}
 			{...props}
 		>
-			{children}
+			<Image src={src} width={width} />
 		</div>
 	);
 }
