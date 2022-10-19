@@ -24,27 +24,30 @@ interface RedditAPIUser {
 	};
 }
 
-const redditAPIUserValidator: Validator<RedditAPIUser> = schema.object({
-	kind: schema.string().exact("t2"),
-	data: schema.object({
-		id: schema.string(),
-		name: schema.string(),
-		icon_img: schema.string(),
-		created_utc: schema.number().integer(),
-		total_karma: schema.number().integer(),
-		link_karma: schema.number().integer(),
-		comment_karma: schema.number().integer(),
-		awarder_karma: schema.number().integer(),
-		awardee_karma: schema.number().integer(),
-		subreddit: schema.object({
-			title: schema.string(),
-			public_description: schema.string()
+const redditAPIUserValidator: Validator<RedditAPIUser> = schema.object(
+	{
+		kind: schema.string().exact("t2"),
+		data: schema.object({
+			id: schema.string(),
+			name: schema.string(),
+			icon_img: schema.string(),
+			created_utc: schema.number().integer(),
+			total_karma: schema.number().integer(),
+			link_karma: schema.number().integer(),
+			comment_karma: schema.number().integer(),
+			awarder_karma: schema.number().integer(),
+			awardee_karma: schema.number().integer(),
+			subreddit: schema.object({
+				title: schema.string(),
+				public_description: schema.string()
+			})
 		})
-	})
-});
+	},
+	"redditApiUser"
+);
 
 class Reddit {
-	static readonly ENDPOINT = "https://oauth.reddit.com/api/v1";
+	static readonly ENDPOINT = process.env.REDDIT_API;
 
 	static async test(session: IronSession, path: string): Promise<unknown> {
 		const res = await axios.get(

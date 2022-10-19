@@ -49,7 +49,7 @@ abstract class SchemaCondition<C, R extends C> extends Validator<R> {
 	}
 
 	assert(val: unknown, name = this.defaultName): asserts val is R {
-		this.base.assert(val);
+		this.base.assert(val, name);
 		if (!this.condition(val, name)) {
 			throw new AssertionError(
 				`Unexpected value ${JSON.stringify(val)} for ${name}: ${this.message}`
