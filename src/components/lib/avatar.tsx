@@ -12,11 +12,12 @@ function Avatar({ width, src, css, ...props }: AvatarProps): JSX.Element {
 			css={{
 				display: "inline-block",
 				borderRadius: "100%",
+				overflow: "hidden",
 				...css
 			}}
 			{...props}
 		>
-			<Image src={src} width={width} />
+			<Image src={src} width={width} layout="fixed" />
 		</div>
 	);
 }
