@@ -6,11 +6,13 @@ import Text from "./typography/Text";
 
 interface ButtonProps extends BasePropsWithChildren<HTMLButtonElement> {
 	variant?: "primary" | "secondary" | "text";
+	padding?: "s" | "m";
 	href?: string;
 }
 
 function Button({
 	variant = "primary",
+	padding = "m",
 	children,
 	css,
 	href,
@@ -44,21 +46,29 @@ function Button({
 		<button
 			css={{
 				appearance: "none",
-				padding: theme.spacing(2, 6),
+				padding: padding === "m" ? theme.spacing(2, 6) : theme.spacing(1, 3),
 				cursor: "pointer",
 				backgroundColor: bgColor?.[500] ?? "transparent",
 				border: `2px ${bgColor?.[500] ?? "transparent"} solid`,
-				transition: "border-color",
-				transitionDuration: theme.durations.medium,
+				transition: theme.transition(
+					{
+						property: "border-color",
+						duration: "medium"
+					},
+					{
+						property: "background-color",
+						duration: "veryShort"
+					}
+				),
 				color: textColor,
 				borderRadius: theme.borderRadius,
 
 				"&:hover": {
-					borderColor: bgColor?.[800] ?? "#ffffffa0"
+					borderColor: bgColor?.[800]
 				},
 
 				"&:active": {
-					backgroundColor: bgColor?.[600] ?? "#ffffff80"
+					backgroundColor: bgColor?.[600] ?? "#ffffff30"
 				}
 			}}
 			onClick={clickHandler}
