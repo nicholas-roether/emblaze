@@ -5,23 +5,40 @@ import schema, { Validator } from "./utils/schema";
 
 const ENDPOINT = "/api/reddit";
 
-class NetworkError extends Error {
-	readonly status?: number;
+class NetworkError extends Error {}
 
-	constructor(message: string, status?: number) {
+class ReturedError extends Error {
+	readonly status: number;
+
+	constructor(message: string, status: number) {
 		super(message);
 		this.status = status;
 	}
 }
 
-class ReturedError extends Error {}
+class DataHookResponse<T> {
+	readonly error?: Error;
+	readonly data?: T;
 
-interface DataHookResponse<T> {
-	error?: Error;
-	data?: T;
+	constructor(data?: T, error?: Error) {
+		this.data = data;
+		this.error = error;
+	}
+
+	assert(): T | undefined {
+		if (this.error) throw this.error;
+		return this.data;
+	}
 }
 
-const fetcher = async (config: AxiosRequestConfig): Promise<unknown> => {
+interface FetcherResponse {
+	status: number;
+	value: unknown;
+}
+
+const fetcher = async (
+	config: AxiosRequestConfig
+): Promise<FetcherResponse> => {
 	const res = await axios.request({
 		baseURL: ENDPOINT,
 		validateStatus(status) {
@@ -29,7 +46,7 @@ const fetcher = async (config: AxiosRequestConfig): Promise<unknown> => {
 		},
 		...config
 	});
-	return res.data;
+	return { status: res.status, value: res.data };
 };
 
 type APIResponse = { data: unknown } | { error: string };
@@ -51,17 +68,20 @@ function useAPIResponse<T>(
 	validator: Validator<T>
 ): DataHookResponse<T> {
 	const { data, error } = useSWR(config, fetcher);
-	if (error) return { error };
+	if (error) return new DataHookResponse<T>(undefined, error);
 	if (data) {
-		console.log(data);
-		apiResponseValidator.assert(data);
-		if ("error" in data) {
-			return { error: new ReturedError(data.error) };
+		const { value, status } = data;
+		apiResponseValidator.assert(value);
+		if ("error" in value) {
+			return new DataHookResponse<T>(
+				undefined,
+				new ReturedError(value.error, status)
+			);
 		}
-		validator.assert(data.data);
-		return { data: data.data };
+		validator.assert(value.data);
+		return new DataHookResponse(value.data);
 	}
-	return {};
+	return new DataHookResponse();
 }
 
 const dataHooks = {
