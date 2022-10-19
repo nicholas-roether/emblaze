@@ -154,7 +154,7 @@ class Api {
 				);
 				break;
 			case "json":
-				ctx.res.json({ error: { message } });
+				ctx.res.json({ error: message });
 				break;
 			case "raw":
 				ctx.res.send(message);
