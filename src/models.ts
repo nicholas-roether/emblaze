@@ -1,6 +1,7 @@
 import schema, { Validator } from "./utils/schema";
 
 interface User {
+	id: string;
 	name: string;
 	displayName: string;
 	profilePicture: string;
@@ -15,6 +16,7 @@ interface User {
 
 const userSchema: Validator<User> = schema.object(
 	{
+		id: schema.string(),
 		name: schema.string(),
 		displayName: schema.string(),
 		profilePicture: schema.string(),
@@ -29,4 +31,6 @@ const userSchema: Validator<User> = schema.object(
 	"user"
 );
 
-export {};
+export { userSchema };
+
+export type { User };
