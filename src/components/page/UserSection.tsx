@@ -22,13 +22,9 @@ interface UserProfileProps {
 function UserProfile({ user }: UserProfileProps) {
 	const theme = useTheme();
 	return (
-		<div>
-			<Text css={{ marginRight: theme.spacing(1) }}>{user.name}</Text>
-			<Avatar
-				width={theme.spacing(8)}
-				src={user.profilePicture}
-				css={{ verticalAlign: "center" }}
-			/>
+		<div css={{ display: "flex", alignItems: "center" }}>
+			<Text css={{ marginRight: theme.spacing(3) }}>{user.name}</Text>
+			<Avatar width={theme.spacing(8)} src={user.profilePicture} />
 		</div>
 	);
 }

@@ -13,6 +13,7 @@ function Avatar({ width, src, css, ...props }: AvatarProps): JSX.Element {
 				display: "inline-block",
 				borderRadius: "100%",
 				overflow: "hidden",
+				lineHeight: 0,
 				...css
 			}}
 			{...props}
