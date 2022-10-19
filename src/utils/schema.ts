@@ -1,15 +1,13 @@
 class AssertionError extends Error {}
 
 abstract class Validator<T> {
-	name: string;
 	readonly type: string | null;
 
-	constructor(name = "schema", type: string | null) {
-		this.name = name;
+	constructor(type: string | null) {
 		this.type = type;
 	}
 
-	abstract assert(val: unknown): asserts val is T;
+	abstract assert(val: unknown, name?: string): asserts val is T;
 
 	check(val: unknown): val is T {
 		try {
@@ -24,27 +22,33 @@ abstract class Validator<T> {
 
 abstract class SchemaCondition<C, R extends C> extends Validator<R> {
 	private readonly base: Validator<C>;
+	readonly defaultName: string;
 	readonly message: string;
 
 	constructor(
 		base: Validator<C>,
 		message?: string,
 		type: string | null = null,
-		name = "schema"
+		defaultName?: string
 	) {
-		super(name ?? base.name, type ?? base.type);
+		super(type ?? base.type);
 		this.base = base;
+		this.defaultName =
+			defaultName ??
+			(this.base instanceof SchemaCondition ? this.base.defaultName : "value");
 		this.message = message ?? `Expected ${type}`;
 	}
 
-	assert(val: unknown): asserts val is R {
+	assert(val: unknown, name = this.defaultName): asserts val is R {
 		this.base.assert(val);
-		if (!this.condition(val)) {
-			throw new AssertionError(this.message);
+		if (!this.condition(val, name)) {
+			throw new AssertionError(
+				`Unexpected value for ${name} (${val}): ${this.message}`
+			);
 		}
 	}
 
-	protected abstract condition(val: C): val is R;
+	protected abstract condition(val: C, name: string): val is R;
 
 	oneOf<O extends R>(...options: O[]): OptionCondition<R, O> {
 		return new OptionCondition(this, options);
@@ -69,15 +73,16 @@ class OptionCondition<C, O extends C> extends SchemaCondition<C, C & O> {
 	constructor(base: Validator<C>, options: O[]) {
 		super(
 			base,
-			`Expected one of: ${options.map((o) => JSON.stringify(o)).join(", ")}`
+			`Expected one of: ${options.map((o) => JSON.stringify(o)).join(", ")}`,
+			"union"
 		);
 		this.options = options;
 	}
 
 	protected condition(val: C): val is C & O {
-		this.options.forEach((opt) => {
+		for (const opt of this.options) {
 			if (val === opt) return true;
-		});
+		}
 		return false;
 	}
 }
@@ -107,21 +112,18 @@ class IntegerCondition<C extends number> extends SchemaCondition<C, C> {
 
 class BaseValidator extends Validator<unknown> {
 	constructor() {
-		super("value", null);
+		super(null);
 	}
 
 	assert(val: unknown): asserts val is unknown {}
 }
 
 class TypeSchema<T> extends SchemaCondition<unknown, T> {
-	readonly name: string;
-
 	constructor(type: string | null, name = "value") {
 		super(new BaseValidator(), `Expected type ${type}`, type, name);
-		this.name = name;
 	}
 
-	protected condition(val: unknown): val is T {
+	protected condition(val: unknown, name: string): val is T {
 		return typeof val === this.type;
 	}
 }
@@ -156,25 +158,23 @@ class UnionSchema<T> extends TypeSchema<T> {
 
 type ObjectFieldValidators<T> = { [K in keyof T]: Validator<T[K]> };
 
-class ObjectSchema<T extends Record<string, unknown>> extends TypeSchema<T> {
+class ObjectSchema<T> extends TypeSchema<T> {
 	private readonly fieldValidators: ObjectFieldValidators<T>;
 
 	constructor(fields: ObjectFieldValidators<T>, name?: string) {
 		super("object", name);
-		for (const key in fields) {
-			fields[key].name = `${this.name}.${key}`;
-		}
 		this.fieldValidators = fields;
 	}
 
-	protected condition(val: unknown): val is T {
+	protected condition(val: unknown, name: string): val is T {
 		if (typeof val != "object") return false;
 		if (val == null) return false;
 		for (let key in this.fieldValidators) {
-			const fieldValidator = this.fieldValidators[key] as Validator<T[string]>;
+			const fieldValidator = this.fieldValidators[key];
 			fieldValidator.assert.call(
 				fieldValidator,
-				(val as Record<string, unknown>)[key]
+				(val as Record<string, unknown>)[key],
+				`${name}.${key}`
 			);
 		}
 		return true;
@@ -185,15 +185,14 @@ class ArraySchema<T extends unknown[]> extends TypeSchema<T> {
 	private readonly valueValidator: Validator<T[number]>;
 
 	constructor(values: Validator<T[number]>, name?: string) {
-		super("array", name ?? `${values.name}[]`);
+		super("array", name ?? `array`);
 		this.valueValidator = values;
 	}
 
-	protected condition(val: unknown): val is T {
+	protected condition(val: unknown, name?: string): val is T {
 		if (!Array.isArray(val)) return false;
 		val.forEach((item, i) => {
-			this.valueValidator.name = `${this.name}[${i}]`;
-			this.valueValidator.assert(item);
+			this.valueValidator.assert(item, `${name}[${i}]`);
 		});
 		return true;
 	}
@@ -214,10 +213,7 @@ const schema = {
 		return new NumberSchema(name);
 	},
 
-	object<T extends Record<string, unknown>>(
-		fields: ObjectFieldValidators<T>,
-		name?: string
-	): ObjectSchema<T> {
+	object<T>(fields: ObjectFieldValidators<T>, name?: string): ObjectSchema<T> {
 		return new ObjectSchema(fields, name);
 	},
 
@@ -233,7 +229,7 @@ const schema = {
 		return schema.union([schema.undefined(), validator]);
 	},
 
-	array<T extends unknown[]>(values: Validator<T[number]>, name?: string) {
+	array<T>(values: Validator<T>, name?: string): ArraySchema<T[]> {
 		return new ArraySchema(values, name);
 	}
 };
