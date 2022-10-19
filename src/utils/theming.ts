@@ -58,6 +58,14 @@ class MediaQuery {
 interface ThemeUtils {
 	media: MediaQuery;
 	spacing(...spacings: (number | string)[]): string;
+	transition(...definitions: TransitionDefinition[]): string;
+}
+
+interface TransitionDefinition {
+	property?: string;
+	properties?: string[];
+	easing?: string;
+	duration: Duration;
 }
 
 function themeUtils(themeData: ThemeData): ThemeUtils {
@@ -74,6 +82,23 @@ function themeUtils(themeData: ThemeData): ThemeUtils {
 					return `${themeData.spacingFactor * spacing}px`;
 				})
 				.join(" ");
+		},
+
+		transition(...definitions: TransitionDefinition[]): string {
+			const items: string[] = [];
+			for (const definition of definitions) {
+				const properties = definition.property
+					? [definition.property]
+					: definition.properties;
+				if (!properties) continue;
+				for (const property of properties) {
+					let parts = [property];
+					if (definition.easing) parts.push(definition.easing);
+					parts.push(themeData.durations[definition.duration]);
+					items.push(parts.join(" "));
+				}
+			}
+			return items.join(", ");
 		}
 	};
 }
