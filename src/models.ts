@@ -5,6 +5,7 @@ interface User {
 	profilePicture: string;
 	created: number;
 	karma: {
+		total: number;
 		post: number;
 		comment: number;
 		awardee: number;
