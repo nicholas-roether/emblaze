@@ -17,7 +17,7 @@ function Avatar({ width, src, css, ...props }: AvatarProps): JSX.Element {
 			}}
 			{...props}
 		>
-			<Image src={src} width={width} layout="fixed" />
+			<Image src={src} width={width} height={width} layout="fixed" />
 		</div>
 	);
 }
