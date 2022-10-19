@@ -1,5 +1,6 @@
 import { useTheme } from "@emotion/react";
 import { FiUser } from "react-icons/fi";
+import Image from "next/image";
 import dataHooks, { ReturedError } from "../../data_hooks";
 import { User } from "../../models";
 import Avatar from "../lib/avatar";
@@ -24,7 +25,9 @@ function UserProfile({ user }: UserProfileProps) {
 	return (
 		<>
 			<Text css={{ marginRight: theme.spacing(1) }}>{user.name}</Text>
-			<Avatar size={theme.spacing(8)}></Avatar>
+			<Avatar size={theme.spacing(8)}>
+				<Image src={user.profilePicture} />
+			</Avatar>
 		</>
 	);
 }
