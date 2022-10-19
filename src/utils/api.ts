@@ -164,7 +164,7 @@ class Api {
 	private static logError(ctx: ApiContext, error: unknown) {
 		const route = ctx.req.url!;
 		if (error instanceof Error) {
-			console.log(`${error.name} in ${route}: ${error.message}`);
+			console.log(`${error.name} in ${route}`);
 			console.error(error.stack);
 			if (error.cause) this.logErrorCause(error.cause);
 		} else {
@@ -173,11 +173,11 @@ class Api {
 	}
 
 	private static logErrorCause(cause: unknown) {
-		console.log(`Caused by: ${cause}`);
 		if (cause instanceof Error) {
+			console.log(`Caused by: ${cause.name}`);
 			console.error(cause.stack);
 			if (cause.cause) this.logErrorCause(cause.cause);
-		}
+		} else console.log(`Caused by: ${cause}`);
 	}
 }
 
