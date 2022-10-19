@@ -167,11 +167,11 @@ class UnionSchema<T> extends TypeSchema<T> {
 
 type ObjectFieldValidators<T> = { [K in keyof T]: Validator<T[K]> };
 
-class ObjectSchema<T> extends TypeSchema<T> {
+class ObjectSchema<T> extends SchemaCondition<unknown, T> {
 	private readonly fieldValidators: ObjectFieldValidators<T>;
 
 	constructor(fields: ObjectFieldValidators<T>, name?: string) {
-		super("object", name);
+		super(new BaseValidator(), "Expected object", "object", name ?? "object");
 		this.fieldValidators = fields;
 	}
 
@@ -190,11 +190,11 @@ class ObjectSchema<T> extends TypeSchema<T> {
 	}
 }
 
-class ArraySchema<T extends unknown[]> extends TypeSchema<T> {
+class ArraySchema<T extends unknown[]> extends SchemaCondition<unknown, T> {
 	private readonly valueValidator: Validator<T[number]>;
 
 	constructor(values: Validator<T[number]>, name?: string) {
-		super("array", name ?? `array`);
+		super(new BaseValidator(), "Expected array", "array", name ?? "array");
 		this.valueValidator = values;
 	}
 
