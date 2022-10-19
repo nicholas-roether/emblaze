@@ -68,7 +68,7 @@ class Reddit {
 			new ApiError(500, "Reddit user response interpretation failed")
 		);
 		return {
-			id: body.data.id,
+			id: `t2_${body.data.id}`,
 			name: body.data.name,
 			displayName: body.data.subreddit.title,
 			profilePicture: body.data.icon_img,
