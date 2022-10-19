@@ -15,7 +15,7 @@ function SearchBar(): JSX.Element {
 				padding: theme.spacing(3, 6),
 				cursor: "text",
 				userSelect: "none",
-				backgroundColor: theme.colors.background[600],
+				backgroundColor: theme.colors.background[700],
 				borderRadius: "100000px",
 
 				[theme.media.below("s")]: {
@@ -31,13 +31,13 @@ function SearchBar(): JSX.Element {
 		>
 			<Text
 				css={{
-					color: theme.colors.background[900],
+					color: theme.colors.gray[800],
 					flex: 1
 				}}
 			>
 				Search reddit...
 			</Text>
-			<Icon color={theme.colors.background[900]}>{FiSearch}</Icon>
+			<Icon color={theme.colors.gray[800]}>{FiSearch}</Icon>
 		</div>
 	);
 }

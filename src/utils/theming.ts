@@ -9,6 +9,7 @@ interface ThemeData {
 		primary: ColorShades;
 		secondary: ColorShades;
 		background: ColorShades;
+		gray: ColorShades;
 		onPrimary: string;
 		onSecondary: string;
 		onBackground: string;

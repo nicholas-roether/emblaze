@@ -20,8 +20,8 @@ function App({ Component, pageProps }: AppProps) {
 			<ThemeProvider theme={theme}>
 				<SkeletonTheme
 					duration={1.5}
-					baseColor={theme.colors.background[600]}
-					highlightColor={theme.colors.background[700]}
+					baseColor={theme.colors.background[700]}
+					highlightColor={theme.colors.background[800]}
 				>
 					<Component {...pageProps} />
 				</SkeletonTheme>

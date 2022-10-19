@@ -39,22 +39,29 @@ function rgbToHex(r: number, g: number, b: number) {
 	return "#" + hexString;
 }
 
+const INTER_MAX_RANGE = 90;
+
+function interpolateColorPart(factor: number, part: number) {
+	let range: number;
+	if (factor > 0) {
+		range = Math.min(255 - part, INTER_MAX_RANGE);
+	} else {
+		range = Math.max(part, -INTER_MAX_RANGE);
+	}
+	return part + Math.round(factor * range);
+}
+
 function getColorShade(
 	r: number,
 	g: number,
 	b: number,
 	factor: number
 ): [r: number, g: number, b: number] {
-	if (factor > 0) {
-		r += Math.round(factor * (255 - r));
-		g += Math.round(factor * (255 - g));
-		b += Math.round(factor * (255 - b));
-	} else if (factor < 0) {
-		r += Math.round(factor * r);
-		g += Math.round(factor * g);
-		b += Math.round(factor * b);
-	}
-	return [r, g, b];
+	return [
+		interpolateColorPart(factor, r),
+		interpolateColorPart(factor, g),
+		interpolateColorPart(factor, b)
+	];
 }
 
 function shades(hex: string): ColorShades {

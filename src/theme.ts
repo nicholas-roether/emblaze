@@ -9,6 +9,7 @@ const theme: Theme = createTheme({
 		primary: shades("#fd6b10"),
 		secondary: shades("#ffe285"),
 		background: shades("#1e1e24"),
+		gray: shades("#7f7f7f"),
 		onPrimary: "#000",
 		onSecondary: "#000",
 		onBackground: "#fff"
