@@ -54,11 +54,11 @@ function Button({
 				borderRadius: theme.borderRadius,
 
 				"&:hover": {
-					borderColor: bgColor?.[800]
+					borderColor: bgColor?.[800] ?? "#ffffffa0"
 				},
 
 				"&:active": {
-					backgroundColor: bgColor?.[600]
+					backgroundColor: bgColor?.[600] ?? "#ffffff80"
 				}
 			}}
 			onClick={clickHandler}
