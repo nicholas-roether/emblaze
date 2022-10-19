@@ -22,10 +22,12 @@ interface UserProfileProps {
 function UserProfile({ user }: UserProfileProps) {
 	const theme = useTheme();
 	return (
-		<div css={{ display: "flex", alignItems: "center" }}>
-			<Text css={{ marginRight: theme.spacing(3) }}>{user.name}</Text>
-			<Avatar width={theme.spacing(8)} src={user.profilePicture} />
-		</div>
+		<Button variant="text" padding="s">
+			<div css={{ display: "flex", alignItems: "center" }}>
+				<Text css={{ marginRight: theme.spacing(3) }}>{user.name}</Text>
+				<Avatar width={theme.spacing(8)} src={user.profilePicture} />
+			</div>
+		</Button>
 	);
 }
 
