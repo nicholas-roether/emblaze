@@ -9,6 +9,15 @@ abstract class Validator<T> {
 
 	abstract assert(val: unknown, name?: string): asserts val is T;
 
+	assertOr(val: unknown, error: Error): asserts val is T {
+		try {
+			this.assert(val);
+		} catch (err) {
+			error.cause = err;
+			throw error;
+		}
+	}
+
 	check(val: unknown): val is T {
 		try {
 			this.assert(val);
