@@ -4,7 +4,7 @@ import schema from "../../../src/utils/schema";
 
 const querySchema = schema.union<
 	{ error: string } | { code: string; state: string }
->(
+>([
 	schema.object({
 		error: schema.string()
 	}),
@@ -12,7 +12,7 @@ const querySchema = schema.union<
 		code: schema.string(),
 		state: schema.string()
 	})
-);
+]);
 
 function handleError(ctx: ApiContext, error: string) {
 	if (error === "access_denied") ctx.res.redirect("/");
