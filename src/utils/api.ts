@@ -2,6 +2,7 @@ import { NextApiHandler, NextApiRequest, NextApiResponse } from "next/types";
 import Cookies from "cookies";
 import { getIronSession, IronSession } from "iron-session";
 import DB from "../services/db";
+import { AxiosError } from "axios";
 
 declare module "iron-session" {
 	interface IronSessionData {
@@ -165,6 +166,7 @@ class Api {
 		const route = ctx.req.url!;
 		if (error instanceof Error) {
 			console.log(`${error.name} in ${route}`);
+			this.logErrorInfo(error);
 			console.error(error.stack);
 			if (error.cause) this.logErrorCause(error.cause);
 		} else {
@@ -175,9 +177,19 @@ class Api {
 	private static logErrorCause(cause: unknown) {
 		if (cause instanceof Error) {
 			console.log(`Caused by: ${cause.name}`);
+			this.logErrorInfo(cause);
 			console.error(cause.stack);
 			if (cause.cause) this.logErrorCause(cause.cause);
 		} else console.log(`Caused by: ${cause}`);
+	}
+
+	private static logErrorInfo(error: Error) {
+		if (error instanceof AxiosError) {
+			console.error("Request:");
+			console.error(JSON.stringify(error.request, undefined, 3));
+			console.error("Response:");
+			console.error(JSON.stringify(error.response, undefined, 3));
+		}
 	}
 }
 
