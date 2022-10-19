@@ -51,7 +51,7 @@ function TopBar(): JSX.Element {
 			css={{
 				position: "sticky",
 				top: 0,
-				height: "64px",
+				height: "54px",
 				display: "flex",
 				alignItems: "center",
 				justifyContent: "space-between",
@@ -62,8 +62,13 @@ function TopBar(): JSX.Element {
 				transition: "box-shadow",
 				transitionDuration: theme.durations.long,
 
-				[theme.media.above("m")]: {
-					paddinG: theme.spacing(2, 8)
+				[theme.media.above("s")]: {
+					height: "64px",
+					padding: theme.spacing(2, 3)
+				},
+
+				[theme.media.above("l")]: {
+					padding: theme.spacing(2, 8)
 				}
 			}}
 		>

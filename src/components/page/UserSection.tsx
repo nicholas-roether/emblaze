@@ -6,6 +6,7 @@ import Avatar from "../lib/avatar";
 import Button from "../lib/button";
 import Icon from "../lib/Icon";
 import Text from "../lib/typography/Text";
+import Skeleton from "react-loading-skeleton";
 
 function Login(): JSX.Element {
 	return (
@@ -16,17 +17,31 @@ function Login(): JSX.Element {
 }
 
 interface UserProfileProps {
-	user: User;
+	user?: User;
 }
 
-function UserProfile({ user }: UserProfileProps) {
+function UserProfile({ user }: UserProfileProps): JSX.Element {
 	const theme = useTheme();
+
+	const userProfileContent = (
+		<div css={{ display: "flex", alignItems: "center" }}>
+			<Text css={{ marginRight: theme.spacing(3) }}>
+				{user ? user.name : <Skeleton width="80px" />}
+			</Text>
+			{user ? (
+				<Avatar width="36px" src={user.profilePicture} />
+			) : (
+				<Skeleton circle width="36px" height="36px" />
+			)}
+		</div>
+	);
+
+	if (!user)
+		return <div css={{ padding: theme.spacing(1, 3) }}>userProfileContent</div>;
+
 	return (
 		<Button variant="text" padding="s">
-			<div css={{ display: "flex", alignItems: "center" }}>
-				<Text css={{ marginRight: theme.spacing(3) }}>{user.name}</Text>
-				<Avatar width={theme.spacing(8)} src={user.profilePicture} />
-			</div>
+			{userProfileContent}
 		</Button>
 	);
 }
@@ -39,11 +54,7 @@ function UserSection(): JSX.Element {
 		return <Login />;
 	}
 
-	if (user) {
-		return <UserProfile user={user} />;
-	}
-
-	return <Text>Loading...</Text>;
+	return <UserProfile user={user} />;
 }
 
 export default UserSection;
