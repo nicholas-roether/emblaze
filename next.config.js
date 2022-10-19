@@ -3,8 +3,8 @@ module.exports = {
 	images: {
 		remotePatterns: [
 			{
-				protocol: "styles.redditmedia.com",
-				hostname: "reddit.com",
+				protocol: "https",
+				hostname: "styles.redditmedia.com",
 				port: "",
 				pathname: "/**"
 			}
