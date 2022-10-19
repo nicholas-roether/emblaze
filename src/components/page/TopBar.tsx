@@ -11,7 +11,8 @@ function Logo(): JSX.Element {
 	return (
 		<span
 			css={{
-				display: "inline-flex"
+				display: "inline-flex",
+				alignItems: "center"
 			}}
 		>
 			<Icon
@@ -50,19 +51,19 @@ function TopBar(): JSX.Element {
 			css={{
 				position: "sticky",
 				top: 0,
+				height: "64px",
 				display: "flex",
 				alignItems: "center",
 				justifyContent: "space-between",
 				columnGap: theme.spacing(6),
-				padding: theme.spacing(2, 3),
+				padding: theme.spacing(1, 3),
 				background: theme.colors.background[500],
 				boxShadow: floating ? "0 0 24px #000" : "none",
 				transition: "box-shadow",
 				transitionDuration: theme.durations.long,
 
 				[theme.media.above("m")]: {
-					paddingLeft: theme.spacing(8),
-					paddingRight: theme.spacing(8)
+					paddinG: theme.spacing(2, 8)
 				}
 			}}
 		>
