@@ -62,9 +62,9 @@ class OAuth {
 		response: AuthorizationResponse,
 		session: IronSession
 	) {
-		if (response.state !== session.secret) {
+		if (!session.secret) throw new ApiError(403, "Unexpected login attempt");
+		if (response.state !== session.secret)
 			throw new ApiError(401, "Invalid OAuth state");
-		}
 
 		const res = await this.getAccessToken(response.accessCode);
 		if (res.tokenType !== "bearer") throw new Error("Unknown token type");
