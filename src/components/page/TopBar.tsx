@@ -41,7 +41,7 @@ function TopBar(): JSX.Element {
 
 	useEffect(() => {
 		window.addEventListener("scroll", () => {
-			setFloating(window.scrollY !== 0);
+			setFloating(window.scrollY > 0);
 		});
 	}, []);
 
@@ -58,7 +58,7 @@ function TopBar(): JSX.Element {
 				columnGap: theme.spacing(6),
 				padding: theme.spacing(1, 3),
 				background: theme.colors.background[500],
-				boxShadow: floating ? "0 0 24px #000" : "none",
+				boxShadow: floating ? theme.boxShadow : "none",
 				transition: "box-shadow",
 				transitionDuration: theme.durations.long,
 

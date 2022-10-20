@@ -24,7 +24,7 @@ function SearchBar(): JSX.Element {
 					left: theme.spacing(4),
 					right: theme.spacing(4),
 					maxWidth: theme.spacing(100),
-					boxShadow: "0 0 20px 1px #000",
+					boxShadow: theme.boxShadow,
 					margin: "auto"
 				}
 			}}

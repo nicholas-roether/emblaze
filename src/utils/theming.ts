@@ -27,6 +27,7 @@ interface ThemeData {
 	iconSizes: Record<Size, string>;
 	borderRadius: string;
 	durations: Record<Duration, string>;
+	boxShadow: string;
 }
 
 class MediaQuery {

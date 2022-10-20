@@ -56,7 +56,8 @@ const theme: Theme = createTheme({
 		medium: "200ms",
 		long: "350ms",
 		veryLong: "500ms"
-	}
+	},
+	boxShadow: "0 0 24px #000"
 });
 
 export default theme;
