@@ -1,6 +1,13 @@
+import Image from "next/future/image";
 import Icon from "../src/assets/Icon";
+import Card, {
+	CardHeading,
+	CardContent,
+	CardMedia
+} from "../src/components/lib/card";
 import Heading from "../src/components/lib/typography/Heading";
 import Paragraph from "../src/components/lib/typography/Paragraph";
+import Text from "../src/components/lib/typography/Text";
 import TopBar from "../src/components/page/TopBar";
 
 function Home(): JSX.Element {
@@ -13,6 +20,43 @@ function Home(): JSX.Element {
 			<Heading size="m">M Heading</Heading>
 			<Heading size="s">S Heading</Heading>
 			<Heading size="xs">XS Heading</Heading>
+
+			<Card css={{ maxWidth: "700px", margin: "10px auto" }}>
+				<CardHeading>Test Image</CardHeading>
+				<CardMedia>
+					<Image
+						width={1920}
+						height={1080}
+						style={{ width: "100%", height: "auto" }}
+						src="/testimg.jpg"
+						alt="profile picture"
+						sizes="100vw"
+					/>
+				</CardMedia>
+				<CardContent>
+					<Text>1234</Text>
+				</CardContent>
+			</Card>
+
+			<Card css={{ maxWidth: "700px", margin: "10px auto" }}>
+				<CardHeading>Test Text</CardHeading>
+				<CardContent>
+					<Paragraph>
+						Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatem
+						quo earum voluptate mollitia omnis magni maxime incidunt! Possimus
+						perferendis aut iste, recusandae fugiat nisi itaque, voluptates
+						tempora explicabo in architecto?
+					</Paragraph>
+				</CardContent>
+				<CardContent>
+					<Paragraph>
+						Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatem
+						quo earum voluptate mollitia omnis magni maxime incidunt! Possimus
+						perferendis aut iste, recusandae fugiat nisi itaque, voluptates
+						tempora explicabo in architecto?
+					</Paragraph>
+				</CardContent>
+			</Card>
 
 			<Paragraph size="xl">
 				Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusantium
