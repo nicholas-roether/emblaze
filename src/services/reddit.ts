@@ -49,7 +49,19 @@ const redditAPIUserValidator: Validator<RedditAPIUser> = schema.object(
 class Reddit {
 	static readonly ENDPOINT = process.env.REDDIT_API;
 
-	static async test(session: IronSession, path: string): Promise<unknown> {
+	static async test(
+		session: IronSession,
+		path: string,
+		params: Record<string, string | string[] | undefined> = {}
+	): Promise<unknown> {
+		const url = this.getRequestURL(path);
+
+		for (const key in params) {
+			const values = params[key];
+			if (!values) continue;
+			for (const value of values) url.searchParams.set(key, value);
+		}
+
 		const res = await axios.get(
 			this.getRequestURL(path).toString(),
 			await OAuth.authenticateRequest(session)
