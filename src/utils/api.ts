@@ -3,7 +3,6 @@ import Cookies from "cookies";
 import { getIronSession, IronSession } from "iron-session";
 import DB from "../services/db";
 import { AxiosError } from "axios";
-import { IncomingMessage } from "http";
 
 declare module "iron-session" {
 	interface IronSessionData {
@@ -186,13 +185,17 @@ class Api {
 
 	private static logErrorInfo(error: Error) {
 		if (error instanceof AxiosError) {
-			if (error.request instanceof IncomingMessage) {
-				console.error(`Request URL: ${error.request.url}`);
-				console.error(
-					"Request headers:\n" +
-						Object.entries(error.request.headers)
-							.map(([k, v]) => `${k}: ${v}`)
-							.join("\n")
+			console.log(`Request: ${JSON.stringify(error.config, undefined, 3)}`);
+			if (error.response) {
+				console.log(
+					`Response headers:\n${JSON.stringify(
+						error.response.headers,
+						undefined,
+						3
+					)}`
+				);
+				console.log(
+					`Response body:\n${JSON.stringify(error.response.data, undefined, 3)}`
 				);
 			}
 		}
