@@ -12,7 +12,7 @@ const TestReq = Api.handler(async (ctx) => {
 	} catch (err) {
 		if (err instanceof AxiosError) {
 			throw new ApiError(
-				err.code ? Number.parseInt(err.code) : 500,
+				err.status ?? 500,
 				"Request failed; " + err.response?.data ?? "No response body"
 			);
 		}
