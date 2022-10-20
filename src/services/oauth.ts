@@ -126,7 +126,7 @@ class OAuth {
 	): Promise<AccessTokenResponse> {
 		try {
 			const res = await axios.post(
-				`${this.ENDPOINT}/access_token`,
+				this.getRequestURL("/access_token"),
 				`grant_type=refresh_token&refresh_token=${refreshToken}`,
 				{
 					auth: {
@@ -156,7 +156,7 @@ class OAuth {
 	): Promise<AccessTokenResponse> {
 		try {
 			const res = await axios.post(
-				`${this.ENDPOINT}/access_token`,
+				this.getRequestURL("/access_token"),
 				`grant_type=authorization_code&code=${code}&redirect_uri=${this.REDIRECT_URL}`,
 				{
 					auth: {
@@ -185,6 +185,10 @@ class OAuth {
 		const secret = crypto.randomUUID();
 		session.secret = secret;
 		await session.save();
+	}
+
+	private static getRequestURL(path: string): string {
+		return new URL(path, this.ENDPOINT).toString();
 	}
 
 	private static scopesMatch(given: string, required: string) {
