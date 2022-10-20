@@ -61,6 +61,7 @@ function TopBar(): JSX.Element {
 				boxShadow: floating ? theme.boxShadow : "none",
 				transition: "box-shadow",
 				transitionDuration: theme.durations.long,
+				zIndex: 10,
 
 				[theme.media.above("s")]: {
 					height: "64px",
