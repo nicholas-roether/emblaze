@@ -41,7 +41,7 @@ function TopBar(): JSX.Element {
 
 	useEffect(() => {
 		window.addEventListener("scroll", () => {
-			setFloating(window.scrollY !== 0);
+			setFloating(window.scrollY > 0);
 		});
 	}, []);
 
