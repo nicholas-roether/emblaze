@@ -186,15 +186,6 @@ class Api {
 	private static logErrorInfo(error: Error) {
 		if (error instanceof AxiosError) {
 			console.log(`Request: ${JSON.stringify(error.config, undefined, 3)}`);
-			if (error.response) {
-				console.log(
-					`Response headers:\n${JSON.stringify(
-						error.response.headers,
-						undefined,
-						3
-					)}`
-				);
-			}
 		}
 	}
 }
