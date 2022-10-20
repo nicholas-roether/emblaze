@@ -48,7 +48,7 @@ class OAuth {
 	static async createLoginUri(session: IronSession): Promise<string> {
 		await this.generateSessionSecret(session);
 
-		const authUrl = new URL("/authorize", this.ENDPOINT);
+		const authUrl = this.getRequestURL("/authorize");
 		authUrl.searchParams.set("client_id", this.CLIENT_ID);
 		authUrl.searchParams.set("response_type", "code");
 		authUrl.searchParams.set("state", session.secret!);
@@ -126,7 +126,7 @@ class OAuth {
 	): Promise<AccessTokenResponse> {
 		try {
 			const res = await axios.post(
-				this.getRequestURL("/access_token"),
+				this.getRequestURL("/access_token").toString(),
 				`grant_type=refresh_token&refresh_token=${refreshToken}`,
 				{
 					auth: {
@@ -156,7 +156,7 @@ class OAuth {
 	): Promise<AccessTokenResponse> {
 		try {
 			const res = await axios.post(
-				this.getRequestURL("/access_token"),
+				this.getRequestURL("/access_token").toString(),
 				`grant_type=authorization_code&code=${code}&redirect_uri=${this.REDIRECT_URL}`,
 				{
 					auth: {
@@ -187,8 +187,8 @@ class OAuth {
 		await session.save();
 	}
 
-	private static getRequestURL(path: string): string {
-		return new URL(path, this.ENDPOINT).toString();
+	private static getRequestURL(path: string): URL {
+		return new URL(this.ENDPOINT + path);
 	}
 
 	private static scopesMatch(given: string, required: string) {

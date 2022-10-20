@@ -51,7 +51,7 @@ class Reddit {
 
 	static async test(session: IronSession, path: string): Promise<unknown> {
 		const res = await axios.get(
-			this.getRequestURL(path),
+			this.getRequestURL(path).toString(),
 			await OAuth.authenticateRequest(session)
 		);
 		return res.data;
@@ -59,7 +59,7 @@ class Reddit {
 
 	static async me(session: IronSession): Promise<User> {
 		const res = await axios.get(
-			this.getRequestURL("/me"),
+			this.getRequestURL("/me").toString(),
 			await OAuth.authenticateRequest(session)
 		);
 		return this.createUser(res.data);
@@ -86,10 +86,10 @@ class Reddit {
 		};
 	}
 
-	private static getRequestURL(path: string): string {
-		const url = new URL(path, this.ENDPOINT);
+	private static getRequestURL(path: string): URL {
+		const url = new URL(this.ENDPOINT + path);
 		url.searchParams.set("raw_json", "1");
-		return url.toString();
+		return url;
 	}
 }
 
