@@ -15,7 +15,8 @@ const TestReq = Api.handler(async (ctx) => {
 				err.status ?? 500,
 				"Request failed; " + err.response?.data
 					? JSON.stringify(err.response?.data)
-					: "No response body"
+					: "No response body",
+				{ cause: err }
 			);
 		}
 		throw err;
