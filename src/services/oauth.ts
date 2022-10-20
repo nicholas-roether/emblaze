@@ -48,7 +48,7 @@ class OAuth {
 	static async createLoginUri(session: IronSession): Promise<string> {
 		await this.generateSessionSecret(session);
 
-		const authUrl = new URL(this.ENDPOINT + "/authorize");
+		const authUrl = new URL("/authorize", this.ENDPOINT);
 		authUrl.searchParams.set("client_id", this.CLIENT_ID);
 		authUrl.searchParams.set("response_type", "code");
 		authUrl.searchParams.set("state", session.secret!);

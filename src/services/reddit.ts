@@ -59,7 +59,7 @@ class Reddit {
 
 	static async me(session: IronSession): Promise<User> {
 		const res = await axios.get(
-			this.getRequestURL("me"),
+			this.getRequestURL("/me"),
 			await OAuth.authenticateRequest(session)
 		);
 		return this.createUser(res.data);

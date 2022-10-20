@@ -149,10 +149,10 @@ class Api {
 		ctx.res.status(status);
 		switch (responseType) {
 			case "html":
-				ctx.res.redirect(
-					this.ERROR_ENDPOINT +
-						`?status=${status}&message=${encodeURIComponent(message)}`
-				);
+				const redirectUrl = new URL(this.ERROR_ENDPOINT);
+				redirectUrl.searchParams.set("status", status.toString());
+				redirectUrl.searchParams.set("message", message);
+				ctx.res.redirect(redirectUrl.toString());
 				break;
 			case "json":
 				ctx.res.json({ error: message });
