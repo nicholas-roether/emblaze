@@ -194,9 +194,6 @@ class Api {
 						3
 					)}`
 				);
-				console.log(
-					`Response body:\n${JSON.stringify(error.response.data, undefined, 3)}`
-				);
 			}
 		}
 	}
