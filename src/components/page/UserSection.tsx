@@ -24,16 +24,16 @@ function UserProfile({ user }: UserProfileProps): JSX.Element {
 	const theme = useTheme();
 
 	const userProfileContent = (
-		<div css={{ display: "flex", alignItems: "center" }}>
+		<span css={{ display: "flex", alignItems: "center" }}>
 			<Text css={{ marginRight: theme.spacing(3) }}>
 				{user ? user.name : <Skeleton width="80px" />}
 			</Text>
 			{user ? (
-				<Avatar width="36px" src={user.profilePicture} />
+				<Avatar size="36px" src={user.profilePicture} />
 			) : (
 				<Skeleton circle width="36px" height="36px" />
 			)}
-		</div>
+		</span>
 	);
 
 	if (!user)
