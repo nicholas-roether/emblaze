@@ -5,7 +5,6 @@ module.exports = {
 			{
 				protocol: "https",
 				hostname: "styles.redditmedia.com",
-				port: "",
 				pathname: "/**"
 			}
 		]
