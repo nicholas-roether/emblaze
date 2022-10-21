@@ -57,8 +57,9 @@ class Reddit {
 		const url = this.getRequestURL(path);
 
 		for (const key in params) {
-			const values = params[key];
+			let values = params[key];
 			if (!values) continue;
+			if (!Array.isArray(values)) values = [values];
 			for (const value of values) url.searchParams.set(key, value);
 		}
 
