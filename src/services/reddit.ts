@@ -63,7 +63,7 @@ class Reddit {
 		}
 
 		const res = await axios.get(
-			this.getRequestURL(path).toString(),
+			url.toString(),
 			await OAuth.authenticateRequest(session)
 		);
 		return res.data;
