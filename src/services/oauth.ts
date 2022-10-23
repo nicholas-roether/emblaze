@@ -76,7 +76,14 @@ class OAuth {
 		const redditUserId = await this.getRedditUserId(res.accessToken);
 		let userId = (await DB.getUserByRedditId(redditUserId))?.id;
 
-		if (!userId) {
+		if (userId) {
+			await DB.updateUserLogin(
+				userId,
+				res.accessToken,
+				res.expiresAt,
+				res.refreshToken
+			);
+		} else {
 			userId = await DB.createUser({
 				redditUserId,
 				accessToken: res.accessToken,

@@ -48,15 +48,18 @@ class DB {
 	static async updateUserLogin(
 		userId: string,
 		accessToken: string,
-		expiresAt: Date
+		expiresAt: Date,
+		refreshToken?: string
 	) {
+		const setQuery: Record<string, unknown> = {
+			"login.accessToken": accessToken,
+			"login.expiresAt": expiresAt
+		};
+		if (refreshToken) setQuery["login.refreshToken"] = refreshToken;
 		await UserModel.updateOne(
 			{ _id: userId },
 			{
-				$set: {
-					"login.accessToken": accessToken,
-					"login.expiresAt": expiresAt
-				}
+				$set: setQuery
 			}
 		);
 	}
