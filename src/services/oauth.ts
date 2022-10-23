@@ -40,6 +40,7 @@ interface AuthorizationResponse {
 
 class OAuth {
 	private static readonly ENDPOINT = process.env.REDDIT_AUTH_API!;
+	private static readonly USER_ID_ENDPOINT = process.env.REDDIT_API! + "/me";
 	private static readonly CLIENT_ID = process.env.REDDIT_CLIENT_ID!;
 	private static readonly REDIRECT_URL = process.env.HOST! + "/api/auth/return";
 	private static readonly OAUTH_SCOPE =
@@ -72,18 +73,40 @@ class OAuth {
 			throw new Error("Missing required permissions");
 		}
 
-		try {
-			const userId = await DB.createUser({
+		const redditUserId = await this.getRedditUserId(res.accessToken);
+		let userId = (await DB.getUserByRedditId(redditUserId))?.id;
+
+		if (!userId) {
+			userId = await DB.createUser({
+				redditUserId,
 				accessToken: res.accessToken,
 				refreshToken: res.refreshToken,
 				expiresAt: res.expiresAt,
 				scope: res.scope
 			});
-			session.user = userId;
-			await session.save();
-		} catch (err) {
-			throw new Error("Failed to write user to database", { cause: err });
 		}
+
+		if (!userId) {
+			throw new Error("Failed to write user to database!");
+		}
+
+		session.user = userId;
+		await session.save();
+	}
+
+	private static async getRedditUserId(accessToken: string) {
+		const res = await axios.get(
+			this.USER_ID_ENDPOINT,
+			this.createAuthHeader(accessToken)
+		);
+		const userId = res.data.data.id;
+		if (!userId) {
+			throw new Error(
+				"Failed to get userId; response was:\n" +
+					JSON.stringify(res.data, undefined, 3)
+			);
+		}
+		return userId;
 	}
 
 	static async authenticateRequest(

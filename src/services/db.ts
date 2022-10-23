@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 for (const modelName in mongoose.models) delete mongoose.models[modelName];
 
 interface UserSchema {
+	redditUserId: string;
 	accessToken: string;
 	refreshToken: string;
 	expiresAt: Date;
@@ -10,6 +11,7 @@ interface UserSchema {
 }
 
 const userSchema = new mongoose.Schema<UserSchema>({
+	redditUserId: { type: String, required: true, unique: true },
 	accessToken: { type: String, required: true },
 	refreshToken: { type: String, required: true },
 	expiresAt: { type: Date, required: true },
@@ -18,13 +20,12 @@ const userSchema = new mongoose.Schema<UserSchema>({
 
 const UserModel = mongoose.model("user", userSchema);
 
-interface User {
+interface User extends UserSchema {
 	id: string;
-	accessToken: string;
-	refreshToken: string;
-	expiresAt: Date;
-	scope: string;
 }
+
+type Doc<T> = mongoose.Document<unknown, any, T> &
+	T & { _id: mongoose.Types.ObjectId };
 
 class DB {
 	static async connect(): Promise<void> {
@@ -39,15 +40,9 @@ class DB {
 	}
 
 	static async getUser(id: string): Promise<User | null> {
-		const user = await UserModel.findById(id);
-		if (!user) return null;
-		return {
-			id: user._id.toHexString(),
-			accessToken: user.accessToken,
-			refreshToken: user.refreshToken,
-			expiresAt: user.expiresAt,
-			scope: user.scope
-		};
+		const doc = await UserModel.findById(id);
+		if (!doc) return null;
+		return this.createUserFromDoc(doc);
 	}
 
 	static async updateUserLogin(
@@ -64,6 +59,23 @@ class DB {
 				}
 			}
 		);
+	}
+
+	static async getUserByRedditId(redditUserId: string): Promise<User | null> {
+		const doc = await UserModel.findOne({ redditUserId });
+		if (!doc) return null;
+		return this.createUserFromDoc(doc);
+	}
+
+	private static createUserFromDoc(doc: Doc<UserSchema>): User {
+		return {
+			id: doc._id.toHexString(),
+			redditUserId: doc.redditUserId,
+			accessToken: doc.accessToken,
+			refreshToken: doc.refreshToken,
+			expiresAt: doc.expiresAt,
+			scope: doc.scope
+		};
 	}
 }
 
