@@ -6,11 +6,10 @@
 		"plugin:solid/typescript",
 		"plugin:import/recommended",
 		"plugin:import/typescript",
-		"plugin:flowtype/recommended",
 		"plugin:jsx-a11y/recommended",
 		"prettier"
 	],
-	"plugins": ["@typescript-eslint", "solid", "import", "flowtype", "jsx-a11y"],
+	"plugins": ["@typescript-eslint", "solid", "import", "jsx-a11y"],
 	"parser": "@typescript-eslint/parser",
 	"rules": {
 		// Doesn't properly work with pnp
