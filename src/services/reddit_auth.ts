@@ -108,9 +108,16 @@ class RedditAuth {
 			refreshToken: newLogin.refreshToken,
 			scope: this.OAUTH_SCOPES
 		});
-		await this.saveLogin(session, newLogin, userId);
+		this.saveLogin(session, newLogin, userId);
 
 		return true;
+	}
+
+	public static async logout(session: Session): Promise<void> {
+		const db = await DB.open();
+		const userId = this.getLoggedInUser(session);
+		this.deleteLogin(session);
+		if (userId) await db.deleteUser(userId);
 	}
 
 	public static async getOrRefreshLogin(
@@ -142,7 +149,7 @@ class RedditAuth {
 		const login = await this.refreshAccessToken(user.refreshToken);
 		if (!login) return null;
 
-		await this.saveLogin(session, login, userId);
+		this.saveLogin(session, login, userId);
 		return login.accessToken;
 	}
 
@@ -229,14 +236,16 @@ class RedditAuth {
 		return userId;
 	}
 
-	private static async saveLogin(
-		session: Session,
-		login: Login,
-		userId: string
-	) {
+	private static saveLogin(session: Session, login: Login, userId: string) {
 		session.set("userId", userId);
 		session.set("accessToken", login.accessToken);
 		session.set("accessExpiresAt", login.expiresAt);
+	}
+
+	private static deleteLogin(session: Session) {
+		session.unset("userId");
+		session.unset("accessToken");
+		session.unset("accessExpiresAt");
 	}
 
 	private static generateSessionIdentifier() {

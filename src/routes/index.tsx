@@ -8,16 +8,29 @@ import { usingSession } from "~/services/session_storage";
 export default function Home() {
 	const user = useRouteData<typeof routeData>();
 
-	function userText() {
+	function userProfile() {
 		const userVal = user();
-		if (!userVal) return "Not logged in";
-		else return `Logged in as ${userVal.name}`;
+		if (!userVal) {
+			return (
+				<>
+					<p>Not logged in</p>
+					<a href="/auth/login">Log in</a>
+				</>
+			);
+		} else {
+			return (
+				<>
+					<p>Logged in as {userVal.name}</p>
+					<a href="/auth/logout">Log out</a>
+				</>
+			);
+		}
 	}
 
 	return (
 		<main>
 			<h1>Emblaze</h1>
-			<p>{userText()}</p>
+			{userProfile()}
 		</main>
 	);
 }

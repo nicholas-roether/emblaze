@@ -69,8 +69,10 @@ class DB {
 		data: Record<string, unknown>,
 		expires?: Date
 	): Promise<string> {
+		console.log("creating session:", data);
 		const session = new this.Session({ data, expires });
 		await session.save();
+		console.log("sesion id is", session._id);
 		return session._id.toHexString();
 	}
 
@@ -79,6 +81,8 @@ class DB {
 		data: Record<string, unknown>,
 		expires?: Date
 	): Promise<void> {
+		if (!(await this.Session.exists({ _id: id })))
+			await this.Session.create({ _id: id, data, expires });
 		await this.Session.updateOne({ _id: id }, { $set: { data, expires } });
 	}
 
@@ -88,12 +92,7 @@ class DB {
 
 	public async readSession(id: string): Promise<Record<string, unknown>> {
 		const session = await this.Session.findById(id);
-		if (!session) {
-			console.error(
-				`ERROR: Tried to read session ${id}, which does not exist!`
-			);
-			return {};
-		}
+		if (!session) return {};
 		return Object.fromEntries(session.data.entries());
 	}
 
