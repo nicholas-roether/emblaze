@@ -223,6 +223,29 @@ class ArraySchema<T extends unknown[]> extends SchemaCondition<unknown, T> {
 	}
 }
 
+class RecordSchema<
+	K extends string | number | symbol,
+	V
+> extends SchemaCondition<unknown, Record<K, V>> {
+	private readonly keyValidator: Validator<K>;
+	private readonly valueValidator: Validator<V>;
+
+	constructor(keys: Validator<K>, values: Validator<V>, name?: string) {
+		super(new BaseValidator(), "Expected record", "object", name ?? "record");
+		this.keyValidator = keys;
+		this.valueValidator = values;
+	}
+
+	protected condition(val: unknown, name?: string): val is Record<K, V> {
+		if (typeof val != "object" || !val) return false;
+		Object.entries(val).forEach(([key, value]) => {
+			this.keyValidator.assert(key, `${name}::${key}`);
+			this.valueValidator.assert(value, `${name}.${key}`);
+		});
+		return true;
+	}
+}
+
 class NeverSchema extends SchemaCondition<unknown, never> {
 	constructor(name?: string) {
 		super(new BaseValidator(), "Expected nothing", null, name);
@@ -230,6 +253,24 @@ class NeverSchema extends SchemaCondition<unknown, never> {
 
 	protected condition(val: unknown): val is never {
 		return false;
+	}
+}
+
+class InstanceOfSchema<T> extends SchemaCondition<unknown, T> {
+	private readonly class: new (...args: unknown[]) => T;
+
+	constructor(constructor: new (...args: unknown[]) => T, name?: string) {
+		super(
+			new BaseValidator(),
+			`Expected instance of ${constructor.name}`,
+			null,
+			name
+		);
+		this.class = constructor;
+	}
+
+	protected condition(val: unknown): val is T {
+		return val instanceof this.class;
 	}
 }
 
@@ -285,12 +326,31 @@ const schema = {
 		return new AnySchema();
 	},
 
+	unknown(): Validator<unknown> {
+		return new BaseValidator();
+	},
+
 	never(): Validator<never> {
 		return new NeverSchema();
 	},
 
 	array<T>(values: Validator<T>, name?: string): ArraySchema<T[]> {
 		return new ArraySchema(values, name);
+	},
+
+	record<K extends string | number | symbol, V>(
+		keys: Validator<K>,
+		values: Validator<V>,
+		name?: string
+	): RecordSchema<K, V> {
+		return new RecordSchema(keys, values, name);
+	},
+
+	instanceOf<T>(
+		constructor: new (...args: unknown[]) => T,
+		name?: string
+	): InstanceOfSchema<T> {
+		return new InstanceOfSchema(constructor, name);
 	}
 };
 

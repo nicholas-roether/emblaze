@@ -1,5 +1,13 @@
-import mongoose from "mongoose";
+import {
+	Collection,
+	ObjectId,
+	MongoClient,
+	UpdateResult,
+	InsertOneResult
+} from "mongodb";
+
 import env from "~/environment";
+import schema, { Validator } from "~/utils/schema";
 
 interface User {
 	redditId: string;
@@ -7,36 +15,32 @@ interface User {
 	scope: string[];
 }
 
-const userSchema = new mongoose.Schema({
-	redditId: { type: String, required: true, unique: true },
-	refreshToken: { type: String, required: true },
-	scope: { type: [String], required: true }
-});
+const userValidator: Validator<User> = schema.object(
+	{
+		redditId: schema.string(),
+		refreshToken: schema.string(),
+		scope: schema.array(schema.string())
+	},
+	"User"
+);
 
 interface Session {
 	expires?: Date;
-	data: Map<string, unknown>;
+	data: Record<string, unknown>;
 }
-
-const sessionSchema = new mongoose.Schema<Session>({
-	expires: { type: Date, index: { expires: 0 } },
-	data: {
-		type: mongoose.SchemaTypes.Map,
-		of: mongoose.SchemaTypes.Mixed,
-		required: true
-	}
+const sessionValidator: Validator<Session> = schema.object({
+	expires: schema.instanceOf(Date),
+	data: schema.record(schema.string(), schema.unknown())
 });
 
 class DB {
-	private readonly connection: mongoose.Connection;
-	private readonly User: mongoose.Model<User>;
-	private readonly Session: mongoose.Model<Session>;
+	private readonly users: Collection;
+	private readonly sessions: Collection;
 	private static readonly instance: Promise<DB> = DB.connect();
 
-	private constructor(connection: mongoose.Connection) {
-		this.connection = connection;
-		this.User = this.connection.model("user", userSchema);
-		this.Session = this.connection.model("session", sessionSchema);
+	private constructor(users: Collection, sessions: Collection) {
+		this.users = users;
+		this.sessions = sessions;
 	}
 
 	public static open(): Promise<DB> {
@@ -44,16 +48,15 @@ class DB {
 	}
 
 	public async createOrReplaceUser(user: User): Promise<string> {
-		await this.User.deleteMany({ redditId: user.redditId });
-		const userDoc = new this.User(user);
-		await userDoc.save();
-		if (!userDoc.id) throw new Error("Failed to save user to database");
-		return userDoc._id.toHexString();
+		await this.users.deleteMany({ redditId: user.redditId });
+		const res = await this.users.insertOne(user);
+		if (!res.acknowledged) throw new Error("Failed to save user to database");
+		return res.insertedId.toHexString();
 	}
 
 	public async getUser(id: string): Promise<User | null> {
-		const userDoc = await this.User.findById(id);
-		if (!userDoc) return null;
+		const userDoc = await this.users.findOne({ _id: new ObjectId(id) });
+		if (!userDoc || !userValidator.check(userDoc)) return null;
 		return {
 			redditId: userDoc.redditId,
 			refreshToken: userDoc.refreshToken,
@@ -62,18 +65,16 @@ class DB {
 	}
 
 	public async deleteUser(id: string): Promise<void> {
-		await this.User.deleteOne({ _id: id });
+		await this.users.deleteOne({ _id: new ObjectId(id) });
 	}
 
 	public async createSession(
 		data: Record<string, unknown>,
 		expires?: Date
 	): Promise<string> {
-		console.log("creating session:", data);
-		const session = new this.Session({ data, expires });
-		await session.save();
-		console.log("sesion id is", session._id);
-		return session._id.toHexString();
+		const res = await this.sessions.insertOne({ data, expires });
+		if (!res.acknowledged) throw new Error("Failed to create session");
+		return res.insertedId.toHexString();
 	}
 
 	public async updateSession(
@@ -81,24 +82,52 @@ class DB {
 		data: Record<string, unknown>,
 		expires?: Date
 	): Promise<void> {
-		if (!(await this.Session.exists({ _id: id })))
-			await this.Session.create({ _id: id, data, expires });
-		await this.Session.updateOne({ _id: id }, { $set: { data, expires } });
+		let res: UpdateResult | InsertOneResult;
+		if (await this.sessions.findOne({ _id: new ObjectId(id) })) {
+			res = await this.sessions.updateOne(
+				{ _id: new ObjectId(id) },
+				{ $set: { data, expires } }
+			);
+		} else {
+			res = await this.sessions.insertOne({
+				_id: new ObjectId(id),
+				data,
+				expires
+			});
+		}
+		if (!res.acknowledged) throw new Error("Failed to update session");
 	}
 
 	public async deleteSession(id: string): Promise<void> {
-		await this.Session.deleteOne({ _id: id });
+		const res = await this.sessions.deleteOne({ _id: new ObjectId(id) });
+		if (!res.acknowledged) throw new Error("Failed to delete session");
 	}
 
 	public async readSession(id: string): Promise<Record<string, unknown>> {
-		const session = await this.Session.findById(id);
-		if (!session) return {};
-		return Object.fromEntries(session.data.entries());
+		const session = await this.sessions.findOne({ _id: new ObjectId(id) });
+		if (!session || !sessionValidator.check(session)) return {};
+		return session.data;
 	}
 
 	private static async connect(): Promise<DB> {
-		const connection = await mongoose.createConnection(env().DB_URI);
-		return new DB(connection);
+		const client = new MongoClient(env().DB_URI);
+		try {
+			await client.connect();
+			const db = client.db();
+			await db.command({ ping: 1 });
+			console.log("Successfully connected to database");
+
+			const users = db.collection("users");
+			const sessions = db.collection("sessions");
+
+			await users.createIndex({ redditId: 1 }, { unique: true });
+			await sessions.createIndex({ expires: 1 }, { expireAfterSeconds: 0 });
+
+			return new DB(users, sessions);
+		} catch (err) {
+			await client.close();
+			throw err;
+		}
 	}
 }
 
