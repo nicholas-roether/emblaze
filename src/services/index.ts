@@ -1,10 +1,13 @@
 import { SessionStorage } from "solid-start";
 import DB from "./database";
+import Reddit from "./reddit";
+import RedditAuth from "./reddit_auth";
 import { createSessionStorageInDB } from "./session_storage";
 
 interface Services {
-	db: DB;
 	sessionStorage: SessionStorage;
+	auth: RedditAuth;
+	reddit: Reddit;
 }
 
 let _services: Promise<Services> | null = null;
@@ -21,8 +24,10 @@ function startServices() {
 	_services = new Promise((res, rej) => {
 		DB.connect(process.env.DB_URI)
 			.then((db) => {
-				const session = createSessionStorageInDB(db);
-				res({ db, sessionStorage: session });
+				const sessionStorage = createSessionStorageInDB(db);
+				const auth = new RedditAuth(db);
+				const reddit = new Reddit();
+				res({ sessionStorage, auth, reddit });
 			})
 			.catch(rej);
 	});

@@ -69,7 +69,7 @@ class RedditAuth {
 		this.db = db;
 	}
 
-	public createAuthConfig(accessToken: string): AxiosRequestConfig {
+	public static createAuthConfig(accessToken: string): AxiosRequestConfig {
 		return {
 			headers: {
 				Authorization: `bearer ${accessToken}`
@@ -146,7 +146,7 @@ class RedditAuth {
 	private async getRedditId(accessToken: string): Promise<string> {
 		const res = await axios.get(
 			RedditAuth.USER_ID_ENDPOINT,
-			this.createAuthConfig(accessToken)
+			RedditAuth.createAuthConfig(accessToken)
 		);
 		const userId = res.data.data.id;
 		if (typeof userId !== "string") {
