@@ -4,7 +4,7 @@ import { createSessionStorageInDB } from "./session_storage";
 
 interface Services {
 	db: DB;
-	session: SessionStorage;
+	sessionStorage: SessionStorage;
 }
 
 let _services: Promise<Services> | null = null;
@@ -22,7 +22,7 @@ function startServices() {
 		DB.connect(process.env.DB_URI)
 			.then((db) => {
 				const session = createSessionStorageInDB(db);
-				res({ db, session });
+				res({ db, sessionStorage: session });
 			})
 			.catch(rej);
 	});

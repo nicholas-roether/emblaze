@@ -10,6 +10,7 @@
       "~/*": ["./src/*"]
     },
     "types": ["node"],
+    "lib": ["ESNext", "DOM"],
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
