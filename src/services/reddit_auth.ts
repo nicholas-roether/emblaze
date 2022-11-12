@@ -3,6 +3,7 @@ import { Session } from "solid-start/session/sessions";
 import axios, { AxiosError, AxiosRequestConfig } from "axios";
 import schema, { Validator } from "~/utils/schema";
 import DB from "./database";
+import env from "~/environment";
 
 interface RedditAccessTokenResponse {
 	access_token: string;
@@ -43,10 +44,10 @@ const REDDIT_AUTH_ENDPOINT = "https://www.reddit.com/api/v1";
 const REDDIT_ENDPOINT = "https://oauth.reddit.com/api/v1";
 
 class RedditAuth {
-	public static readonly SUCCESS_URI = process.env.ORIGIN;
+	public static readonly SUCCESS_URI = env().ORIGIN;
 	private static readonly ENDPOINT = this.getEndpoint();
 	private static readonly USER_ID_ENDPOINT = this.getUserIdEndpoint();
-	private static readonly RETURN_URI = process.env.ORIGIN + "/auth/return";
+	private static readonly RETURN_URI = env().ORIGIN + "/auth/return";
 	private static readonly OAUTH_SCOPES = [
 		"account",
 		"edit",
@@ -63,12 +64,6 @@ class RedditAuth {
 		"wikiread"
 	];
 
-	private readonly db: DB;
-
-	constructor(db: DB) {
-		this.db = db;
-	}
-
 	public static createAuthConfig(accessToken: string): AxiosRequestConfig {
 		return {
 			headers: {
@@ -77,27 +72,29 @@ class RedditAuth {
 		};
 	}
 
-	public async createLoginRedirect(session: Session): Promise<string> {
-		if (await this.getOrRefreshLogin(session)) return RedditAuth.SUCCESS_URI;
+	public static async createLoginRedirect(session: Session): Promise<string> {
+		if (await this.getOrRefreshLogin(session)) return this.SUCCESS_URI;
 
-		const sessionIdentifer = RedditAuth.generateSessionIdentifier();
+		const sessionIdentifer = this.generateSessionIdentifier();
 		session.set("identifier", sessionIdentifer);
 
-		const loginRedirect = new URL(RedditAuth.ENDPOINT + "/authorize");
-		loginRedirect.searchParams.set("client_id", process.env.REDDIT_CLIENT_ID);
+		const loginRedirect = new URL(this.ENDPOINT + "/authorize");
+		loginRedirect.searchParams.set("client_id", env().REDDIT_CLIENT_ID);
 		loginRedirect.searchParams.set("response_type", "code");
 		loginRedirect.searchParams.set("state", sessionIdentifer);
-		loginRedirect.searchParams.set("redirect_uri", RedditAuth.RETURN_URI);
+		loginRedirect.searchParams.set("redirect_uri", this.RETURN_URI);
 		loginRedirect.searchParams.set("duration", "permanent");
-		loginRedirect.searchParams.set("scope", RedditAuth.OAUTH_SCOPES.join(" "));
+		loginRedirect.searchParams.set("scope", this.OAUTH_SCOPES.join(" "));
 		return loginRedirect.toString();
 	}
 
-	public async authorizeUser(
+	public static async authorizeUser(
 		session: Session,
 		sessionIdentifier: string,
 		accessCode: string
 	): Promise<boolean> {
+		const db = await DB.open();
+
 		const currentSessionIdentifier = session.get("identifier");
 		if (typeof currentSessionIdentifier !== "string") return false;
 		if (currentSessionIdentifier !== sessionIdentifier) return false;
@@ -106,21 +103,23 @@ class RedditAuth {
 		if (!newLogin) return false;
 		const redditId = await this.getRedditId(newLogin.accessToken);
 
-		const userId = await this.db.createOrReplaceUser({
+		const userId = await db.createOrReplaceUser({
 			redditId,
 			refreshToken: newLogin.refreshToken,
-			scope: RedditAuth.OAUTH_SCOPES
+			scope: this.OAUTH_SCOPES
 		});
 		await this.saveLogin(session, newLogin, userId);
 
 		return true;
 	}
 
-	public async getOrRefreshLogin(session: Session): Promise<string | null> {
+	public static async getOrRefreshLogin(
+		session: Session
+	): Promise<string | null> {
 		return this.getLogin(session) ?? (await this.attemptLoginRefresh(session));
 	}
 
-	public getLogin(session: Session): string | null {
+	public static getLogin(session: Session): string | null {
 		const accessToken = session.get("accessToken");
 		const accessExpiresAt = session.get("accessExpiresAt");
 		if (typeof accessToken !== "string" || !(accessExpiresAt instanceof Date))
@@ -129,24 +128,28 @@ class RedditAuth {
 		return accessToken;
 	}
 
-	public async attemptLoginRefresh(session: Session): Promise<string | null> {
+	public static async attemptLoginRefresh(
+		session: Session
+	): Promise<string | null> {
+		const db = await DB.open();
+
 		const userId = this.getLoggedInUser(session);
 		if (!userId) return null;
 
-		const user = await this.db.getUser(userId);
-		if (!user || !RedditAuth.scopesMatch(user.scope)) return null;
+		const user = await db.getUser(userId);
+		if (!user || !this.scopesMatch(user.scope)) return null;
 
 		const login = await this.refreshAccessToken(user.refreshToken);
 		if (!login) return null;
 
-		this.saveLogin(session, login, userId);
+		await this.saveLogin(session, login, userId);
 		return login.accessToken;
 	}
 
-	private async getRedditId(accessToken: string): Promise<string> {
+	private static async getRedditId(accessToken: string): Promise<string> {
 		const res = await axios.get(
-			RedditAuth.USER_ID_ENDPOINT,
-			RedditAuth.createAuthConfig(accessToken)
+			this.USER_ID_ENDPOINT,
+			this.createAuthConfig(accessToken)
 		);
 		const userId = res.data.data.id;
 		if (typeof userId !== "string") {
@@ -155,7 +158,9 @@ class RedditAuth {
 		return userId;
 	}
 
-	private async getAccessToken(accessCode: string): Promise<NewLogin | null> {
+	private static async getAccessToken(
+		accessCode: string
+	): Promise<NewLogin | null> {
 		const accessTokenData = await this.requestAccessToken(
 			"authorization_code",
 			"code",
@@ -169,7 +174,7 @@ class RedditAuth {
 		};
 	}
 
-	private async refreshAccessToken(
+	private static async refreshAccessToken(
 		refreshToken: string
 	): Promise<Login | null> {
 		return await this.requestAccessToken(
@@ -179,7 +184,7 @@ class RedditAuth {
 		);
 	}
 
-	private async requestAccessToken(
+	private static async requestAccessToken(
 		grantType: string,
 		tokenName: string,
 		token: string
@@ -190,18 +195,18 @@ class RedditAuth {
 			params.set(tokenName, token);
 
 			const res = await axios.post(
-				RedditAuth.ENDPOINT + "/access_token",
+				this.ENDPOINT + "/access_token",
 				params.toString(),
 				{
 					auth: {
-						username: process.env.REDDIT_CLIENT_ID,
-						password: process.env.REDDIT_CLIENT_SECRET
+						username: env().REDDIT_CLIENT_ID,
+						password: env().REDDIT_CLIENT_SECRET
 					}
 				}
 			);
 			redditAccessTokenResponseValidator.assert(res.data);
 
-			if (!RedditAuth.scopesMatch(res.data.scope.split(" "))) return null;
+			if (!this.scopesMatch(res.data.scope.split(" "))) return null;
 			return {
 				accessToken: res.data.access_token,
 				expiresAt: new Date(Date.now() + res.data.expires_in * 1000),
@@ -218,13 +223,17 @@ class RedditAuth {
 		return null;
 	}
 
-	private getLoggedInUser(session: Session): string | null {
+	private static getLoggedInUser(session: Session): string | null {
 		const userId = session.get("userId");
 		if (typeof userId !== "string") return null;
 		return userId;
 	}
 
-	private saveLogin(session: Session, login: Login, userId: string) {
+	private static async saveLogin(
+		session: Session,
+		login: Login,
+		userId: string
+	) {
 		session.set("userId", userId);
 		session.set("accessToken", login.accessToken);
 		session.set("accessExpiresAt", login.expiresAt);

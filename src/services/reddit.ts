@@ -45,7 +45,7 @@ const REDDIT_ENDPOINT = "https://oauth.reddit.com/api/v1";
 class Reddit {
 	static readonly ENDPOINT = this.getEndpoint();
 
-	public async me(login: string): Promise<User> {
+	public static async me(login: string): Promise<User> {
 		const res = await axios.get(
 			Reddit.ENDPOINT + "/me",
 			RedditAuth.createAuthConfig(login)
@@ -53,7 +53,7 @@ class Reddit {
 		return this.createUser(res.data);
 	}
 
-	private createUser(body: unknown): User {
+	private static createUser(body: unknown): User {
 		redditAPIUserValidator.assert(body);
 		return {
 			id: `t2_${body.data.id}`,
@@ -75,9 +75,9 @@ class Reddit {
 			process.env.NODE_ENV !== "production" &&
 			process.env.DEBUG_REDDIT_ENDPOINT
 		) {
-			return process.env.DEBUG_REDDIT_ENDPOINT + "/me";
+			return process.env.DEBUG_REDDIT_ENDPOINT;
 		}
-		return REDDIT_ENDPOINT + "/me";
+		return REDDIT_ENDPOINT;
 	}
 }
 

@@ -1,12 +1,13 @@
 import { APIEvent, redirect } from "solid-start";
-import { getServices } from "~/services";
+import RedditAuth from "~/services/reddit_auth";
+import { usingSession } from "~/services/session_storage";
 
 export async function GET({ request }: APIEvent) {
-	const { sessionStorage, auth } = await getServices();
-	const session = await sessionStorage.getSession(
-		request.headers.get("Cookie")
+	const responseHeaders = new Headers();
+	const redirectUrl = await usingSession(
+		request.headers,
+		responseHeaders,
+		(session) => RedditAuth.createLoginRedirect(session)
 	);
-	const redirectUrl = await auth.createLoginRedirect(session);
-	await sessionStorage.commitSession(session);
-	return redirect(redirectUrl);
+	return redirect(redirectUrl, { headers: responseHeaders });
 }

@@ -1,22 +1,43 @@
-import { createSessionStorage } from "solid-start";
+import { createSessionStorage, SessionStorage } from "solid-start";
+import { Session } from "solid-start/session/sessions";
+import env from "~/environment";
 import DB from "./database";
 
-function createSessionStorageInDB(db: DB) {
-	return createSessionStorage({
-		cookie: {
-			name: "session",
-			secure: process.env.NODE_ENV !== "development",
-			secrets: [process.env.SESSION_SECRET],
-			sameSite: "lax",
-			path: "/",
-			maxAge: 60 * 60 * 24 * 30,
-			httpOnly: true
-		},
-		createData: db.createSession,
-		updateData: db.updateSession,
-		deleteData: db.deleteSession,
-		readData: db.readSession
-	});
+let _sessionStorage: SessionStorage | null = null;
+
+async function getSessionStorage() {
+	const db = await DB.open();
+	return (
+		_sessionStorage ??
+		(_sessionStorage = createSessionStorage({
+			cookie: {
+				name: "session",
+				secure: process.env.NODE_ENV !== "development",
+				secrets: [env().SESSION_SECRET],
+				sameSite: "lax",
+				path: "/",
+				maxAge: 60 * 60 * 24 * 30,
+				httpOnly: true
+			},
+			createData: (data, expires) => db.createSession(data, expires),
+			updateData: (id, data, expires) => db.updateSession(id, data, expires),
+			deleteData: (id) => db.deleteSession(id),
+			readData: (id) => db.readSession(id)
+		}))
+	);
 }
 
-export { createSessionStorageInDB };
+async function usingSession<T>(
+	requestHeaders: Headers,
+	responseHeaders: Headers,
+	callback: (session: Session) => T | Promise<T>
+): Promise<T> {
+	const sessionStorage = await getSessionStorage();
+	const session = await sessionStorage.getSession(requestHeaders.get("Cookie"));
+	const result = await callback(session);
+	const setCookie = await sessionStorage.commitSession(session);
+	responseHeaders.set("Set-Cookie", setCookie);
+	return result;
+}
+
+export { getSessionStorage, usingSession };

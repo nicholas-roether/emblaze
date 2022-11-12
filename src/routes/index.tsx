@@ -1,7 +1,9 @@
-import { useRouteData } from "solid-start";
+import { useRouteData, useServerContext } from "solid-start";
 import { createServerData$ } from "solid-start/server";
 import { User } from "~/models";
-import { getServices } from "~/services";
+import Reddit from "~/services/reddit";
+import RedditAuth from "~/services/reddit_auth";
+import { usingSession } from "~/services/session_storage";
 
 export default function Home() {
 	const user = useRouteData<typeof routeData>();
@@ -22,12 +24,13 @@ export default function Home() {
 
 export function routeData() {
 	return createServerData$(async (_, { request }): Promise<User | null> => {
-		const { reddit, auth, sessionStorage } = await getServices();
-		const session = await sessionStorage.getSession(
-			request.headers.get("Cookie")
+		const ctx = useServerContext();
+		const login = await usingSession(
+			request.headers,
+			ctx.responseHeaders,
+			(session) => RedditAuth.getOrRefreshLogin(session)
 		);
-		const login = await auth.getOrRefreshLogin(session);
 		if (!login) return null;
-		return reddit.me(login);
+		return await Reddit.me(login);
 	});
 }

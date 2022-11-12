@@ -20,20 +20,18 @@ const requiredVariables: (keyof Environment)[] = [
 	"ORIGIN"
 ];
 
-declare global {
-	// eslint-disable-next-line @typescript-eslint/no-namespace
-	namespace NodeJS {
-		// eslint-disable-next-line @typescript-eslint/no-empty-interface
-		interface ProcessEnv extends Environment {}
+let loaded = false;
+
+function env(): Environment {
+	if (!loaded) {
+		dotenv.config();
+		loaded = true;
+		for (const varName of requiredVariables) {
+			if (!process.env[varName])
+				throw new Error(`Missing environment variable: ${varName}`);
+		}
 	}
+	return process.env as unknown as Environment;
 }
 
-function initEnv() {
-	dotenv.config();
-	for (const varName of requiredVariables) {
-		if (!process.env[varName])
-			throw new Error(`Missing environment variable: ${varName}`);
-	}
-}
-
-export { initEnv };
+export default env;

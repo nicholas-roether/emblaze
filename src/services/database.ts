@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import env from "~/environment";
 
 interface User {
 	redditId: string;
@@ -14,10 +15,10 @@ const userSchema = new mongoose.Schema({
 
 interface Session {
 	expires?: Date;
-	data: Record<string, unknown>;
+	data: Map<string, unknown>;
 }
 
-const sessionSchema = new mongoose.Schema({
+const sessionSchema = new mongoose.Schema<Session>({
 	expires: { type: Date, index: { expires: 0 } },
 	data: {
 		type: mongoose.SchemaTypes.Map,
@@ -30,14 +31,16 @@ class DB {
 	private readonly connection: mongoose.Connection;
 	private readonly User: mongoose.Model<User>;
 	private readonly Session: mongoose.Model<Session>;
+	private static readonly instance: Promise<DB> = DB.connect();
 
-	constructor(connection: mongoose.Connection) {
+	private constructor(connection: mongoose.Connection) {
 		this.connection = connection;
 		this.User = this.connection.model("user", userSchema);
-		this.Session = this.connection.model(
-			"session",
-			sessionSchema
-		) as unknown as mongoose.Model<Session>;
+		this.Session = this.connection.model("session", sessionSchema);
+	}
+
+	public static open(): Promise<DB> {
+		return this.instance;
 	}
 
 	public async createOrReplaceUser(user: User): Promise<string> {
@@ -73,9 +76,10 @@ class DB {
 
 	public async updateSession(
 		id: string,
-		data: Record<string, unknown>
+		data: Record<string, unknown>,
+		expires?: Date
 	): Promise<void> {
-		await this.Session.updateOne({ _id: id }, { $set: { data } });
+		await this.Session.updateOne({ _id: id }, { $set: { data, expires } });
 	}
 
 	public async deleteSession(id: string): Promise<void> {
@@ -90,11 +94,11 @@ class DB {
 			);
 			return {};
 		}
-		return session.data;
+		return Object.fromEntries(session.data.entries());
 	}
 
-	public static async connect(uri: string): Promise<DB> {
-		const connection = await mongoose.createConnection(uri);
+	private static async connect(): Promise<DB> {
+		const connection = await mongoose.createConnection(env().DB_URI);
 		return new DB(connection);
 	}
 }
