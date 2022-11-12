@@ -72,7 +72,7 @@ class Reddit {
 
 	private static getEndpoint(): string {
 		if (
-			process.env.NODE_ENV === "development" &&
+			process.env.NODE_ENV !== "production" &&
 			process.env.DEBUG_REDDIT_ENDPOINT
 		) {
 			return process.env.DEBUG_REDDIT_ENDPOINT + "/me";

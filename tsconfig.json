@@ -11,6 +11,7 @@
     },
     "types": ["node"],
     "lib": ["ESNext", "DOM"],
+    "sourceMap": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,

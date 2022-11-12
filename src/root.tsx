@@ -10,6 +10,11 @@ import {
 	Routes,
 	Title
 } from "solid-start";
+import { initEnv } from "./environment";
+import { startServices } from "./services";
+
+initEnv();
+startServices();
 
 export default function Root() {
 	return (

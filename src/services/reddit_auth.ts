@@ -43,10 +43,10 @@ const REDDIT_AUTH_ENDPOINT = "https://www.reddit.com/api/v1";
 const REDDIT_ENDPOINT = "https://oauth.reddit.com/api/v1";
 
 class RedditAuth {
+	public static readonly SUCCESS_URI = process.env.ORIGIN;
 	private static readonly ENDPOINT = this.getEndpoint();
 	private static readonly USER_ID_ENDPOINT = this.getUserIdEndpoint();
 	private static readonly RETURN_URI = process.env.ORIGIN + "/auth/return";
-	private static readonly SUCCESS_URI = process.env.ORIGIN;
 	private static readonly OAUTH_SCOPES = [
 		"account",
 		"edit",
@@ -240,7 +240,7 @@ class RedditAuth {
 
 	private static getEndpoint(): string {
 		if (
-			process.env.NODE_ENV === "development" &&
+			process.env.NODE_ENV !== "production" &&
 			process.env.DEBUG_REDDIT_AUTH_ENDPOINT
 		) {
 			return process.env.DEBUG_REDDIT_AUTH_ENDPOINT;
@@ -250,7 +250,7 @@ class RedditAuth {
 
 	private static getUserIdEndpoint(): string {
 		if (
-			process.env.NODE_ENV === "development" &&
+			process.env.NODE_ENV !== "production" &&
 			process.env.DEBUG_REDDIT_ENDPOINT
 		) {
 			return process.env.DEBUG_REDDIT_ENDPOINT + "/me";

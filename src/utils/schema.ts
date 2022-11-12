@@ -151,18 +151,20 @@ class NumberSchema extends TypeSchema<number> {
 	}
 }
 
-class UnionSchema<T> extends SchemaCondition<unknown, T> {
-	private readonly options: Validator<T>[];
+class OneOfSchema<A, B> extends SchemaCondition<unknown, A | B> {
+	private readonly option1: Validator<A>;
+	private readonly option2: Validator<B>;
 
-	constructor(options: Validator<T>[], name = "union") {
+	constructor(option1: Validator<A>, option2: Validator<B>, name = "union") {
 		super(new BaseValidator(), "No option was matched", null, name ?? "union");
-		this.options = options;
+		this.option1 = option1;
+		this.option2 = option2;
 	}
 
-	protected condition(val: T, name?: string): val is T {
+	protected condition(val: unknown, name?: string): val is A | B {
 		const errors: AssertionError[] = [];
 
-		for (const option of this.options) {
+		for (const option of [this.option1, this.option2]) {
 			try {
 				option.assert(val, name);
 				return true;
@@ -221,6 +223,16 @@ class ArraySchema<T extends unknown[]> extends SchemaCondition<unknown, T> {
 	}
 }
 
+class NeverSchema extends SchemaCondition<unknown, never> {
+	constructor(name?: string) {
+		super(new BaseValidator(), "Expected nothing", null, name);
+	}
+
+	protected condition(val: unknown): val is never {
+		return false;
+	}
+}
+
 class UndefinedSchema extends TypeSchema<undefined> {
 	constructor() {
 		super("undefined");
@@ -256,17 +268,25 @@ const schema = {
 		return new UndefinedSchema();
 	},
 
-	union<T>(options: Validator<T>[], name?: string) {
-		return new UnionSchema(options, name);
+	oneOf<A, B>(
+		option1: Validator<A>,
+		option2: Validator<B>,
+		name?: string
+	): OneOfSchema<A, B> {
+		return new OneOfSchema(option1, option2, name);
 	},
 
-	optional<T>(validator: Validator<T>): UnionSchema<T | undefined> {
-		return schema.union([schema.undefined(), validator]);
+	optional<T>(validator: Validator<T>): OneOfSchema<T, undefined> {
+		return schema.oneOf(validator, schema.undefined());
 	},
 
 	// eslint-disable-next-line @typescript-eslint/ban-types
 	any(): Validator<{}> {
 		return new AnySchema();
+	},
+
+	never(): Validator<never> {
+		return new NeverSchema();
 	},
 
 	array<T>(values: Validator<T>, name?: string): ArraySchema<T[]> {
