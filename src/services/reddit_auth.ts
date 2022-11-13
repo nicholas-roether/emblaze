@@ -199,6 +199,7 @@ class RedditAuth {
 			const params = new URLSearchParams();
 			params.set("grant_type", grantType);
 			params.set(tokenName, token);
+			params.set("redirect_uri", this.RETURN_URI);
 
 			const res = await axios.post(
 				this.ENDPOINT + "/access_token",
