@@ -158,12 +158,9 @@ class RedditAuth {
 			this.USER_ID_ENDPOINT,
 			this.createAuthConfig(accessToken)
 		);
-		const userId = res.data.data?.id;
+		const userId = res.data.id;
 		if (typeof userId !== "string") {
-			throw new Error(
-				"Failed to get userId; response was\n" +
-					JSON.stringify(res.data, undefined, 3)
-			);
+			throw new Error("Failed to get userId");
 		}
 		return userId;
 	}
