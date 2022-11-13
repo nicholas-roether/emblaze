@@ -1,4 +1,5 @@
 import { APIEvent } from "solid-start";
+import { ValidationError } from "./schema";
 
 class APIError extends Error {
 	public readonly status: number;
@@ -21,7 +22,12 @@ function handler(
 			if (err instanceof APIError) {
 				return new Response(err.message, { status: err.status });
 			}
-			console.error(`ERROR: ${err}`);
+			console.error(err);
+			if (err instanceof ValidationError) {
+				console.error(
+					"Actual value was:\n" + JSON.stringify(err.actual, undefined, 3)
+				);
+			}
 			return new Response("Internal server error", { status: 500 });
 		}
 	};

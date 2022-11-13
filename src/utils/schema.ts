@@ -1,4 +1,11 @@
-class AssertionError extends Error {}
+class ValidationError extends Error {
+	public actual: unknown;
+
+	constructor(message: string, actual: unknown) {
+		super(message);
+		this.actual = actual;
+	}
+}
 
 abstract class Validator<T> {
 	readonly type: string | null;
@@ -23,7 +30,7 @@ abstract class Validator<T> {
 			this.assert(val);
 			return true;
 		} catch (err) {
-			if (err instanceof AssertionError) return false;
+			if (err instanceof ValidationError) return false;
 			throw err;
 		}
 	}
@@ -50,10 +57,18 @@ abstract class SchemaCondition<C, R extends C> extends Validator<R> {
 
 	assert(val: unknown, name = this.defaultName): asserts val is R {
 		this.base.assert(val, name);
-		if (!this.condition(val, name)) {
-			throw new AssertionError(
-				`Unexpected value ${JSON.stringify(val)} for ${name}: ${this.message}`
-			);
+		try {
+			if (!this.condition(val, name)) {
+				throw new ValidationError(
+					`Unexpected value ${JSON.stringify(val)} for ${name}: ${
+						this.message
+					}`,
+					val
+				);
+			}
+		} catch (err) {
+			if (err instanceof ValidationError) err.actual = val;
+			throw err;
 		}
 	}
 
@@ -162,14 +177,14 @@ class OneOfSchema<A, B> extends SchemaCondition<unknown, A | B> {
 	}
 
 	protected condition(val: unknown, name?: string): val is A | B {
-		const errors: AssertionError[] = [];
+		const errors: ValidationError[] = [];
 
 		for (const option of [this.option1, this.option2]) {
 			try {
 				option.assert(val, name);
 				return true;
 			} catch (err) {
-				if (err instanceof AssertionError) errors.push(err);
+				if (err instanceof ValidationError) errors.push(err);
 				else throw err;
 			}
 		}
@@ -177,7 +192,7 @@ class OneOfSchema<A, B> extends SchemaCondition<unknown, A | B> {
 		errors.forEach((err, i) => {
 			errMsg += `\tOption ${i}: ${err.message}\n`;
 		});
-		throw new AssertionError(errMsg);
+		throw new ValidationError(errMsg, val);
 	}
 }
 
@@ -356,4 +371,5 @@ const schema = {
 
 export default schema;
 
+export { ValidationError };
 export type { Validator };
