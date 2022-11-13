@@ -44,7 +44,6 @@ class Reddit {
 			this.getRequestURL("/me"),
 			RedditAuth.createAuthConfig(login)
 		);
-		console.log(JSON.stringify(res.data));
 		return this.createUser(res.data);
 	}
 

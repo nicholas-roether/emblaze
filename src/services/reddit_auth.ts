@@ -107,10 +107,12 @@ class RedditAuth {
 
 		const userId = await db.createOrReplaceUser({
 			redditId,
+			accessToken: newLogin.accessToken,
+			expiresAt: newLogin.expiresAt,
 			refreshToken: newLogin.refreshToken,
 			scope: this.OAUTH_SCOPES
 		});
-		this.saveLogin(session, newLogin, userId);
+		this.saveLogin(session, userId);
 	}
 
 	public static async logout(session: Session): Promise<void> {
@@ -126,13 +128,17 @@ class RedditAuth {
 		return this.getLogin(session) ?? (await this.attemptLoginRefresh(session));
 	}
 
-	public static getLogin(session: Session): string | null {
-		const accessToken = session.get("accessToken");
-		const accessExpiresAt = session.get("accessExpiresAt");
-		if (typeof accessToken !== "string" || !(accessExpiresAt instanceof Date))
-			return null;
-		if (accessExpiresAt.getTime() < Date.now()) return null;
-		return accessToken;
+	public static async getLogin(session: Session): Promise<string | null> {
+		const db = await DB.open();
+
+		const userId = this.getLoggedInUser(session);
+		if (!userId) return null;
+
+		const user = await db.getUser(userId);
+		if (!user) return null;
+
+		if (user.expiresAt.getTime() < Date.now()) return null;
+		return user.accessToken;
 	}
 
 	public static async attemptLoginRefresh(
@@ -149,7 +155,9 @@ class RedditAuth {
 		const login = await this.refreshAccessToken(user.refreshToken);
 		if (!login) return null;
 
-		this.saveLogin(session, login, userId);
+		await db.replaceUserAccessToken(userId, login.accessToken, login.expiresAt);
+		this.saveLogin(session, userId);
+
 		return login.accessToken;
 	}
 
@@ -234,16 +242,12 @@ class RedditAuth {
 		return userId;
 	}
 
-	private static saveLogin(session: Session, login: Login, userId: string) {
+	private static saveLogin(session: Session, userId: string) {
 		session.set("userId", userId);
-		session.set("accessToken", login.accessToken);
-		session.set("accessExpiresAt", login.expiresAt);
 	}
 
 	private static deleteLogin(session: Session) {
 		session.unset("userId");
-		session.unset("accessToken");
-		session.unset("accessExpiresAt");
 	}
 
 	private static generateSessionIdentifier() {

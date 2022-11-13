@@ -3,6 +3,8 @@ import { Session } from "solid-start/session/sessions";
 import env from "~/environment";
 import DB from "./database";
 
+const SESSION_LIFETIME = 60 * 60 * 24 * 30;
+
 let _sessionStorage: SessionStorage | null = null;
 
 async function getSessionStorage() {
@@ -16,7 +18,7 @@ async function getSessionStorage() {
 				secrets: [env().SESSION_SECRET],
 				sameSite: "lax",
 				path: "/",
-				maxAge: 60 * 60 * 24 * 30,
+				maxAge: SESSION_LIFETIME,
 				httpOnly: true
 			},
 			createData: (data, expires) => db.createSession(data, expires),

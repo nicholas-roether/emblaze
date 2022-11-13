@@ -11,6 +11,8 @@ import schema, { Validator } from "~/utils/schema";
 
 interface User {
 	redditId: string;
+	accessToken: string;
+	expiresAt: Date;
 	refreshToken: string;
 	scope: string[];
 }
@@ -18,6 +20,8 @@ interface User {
 const userValidator: Validator<User> = schema.object(
 	{
 		redditId: schema.string(),
+		accessToken: schema.string(),
+		expiresAt: schema.instanceOf(Date),
 		refreshToken: schema.string(),
 		scope: schema.array(schema.string())
 	},
@@ -54,11 +58,24 @@ class DB {
 		return res.insertedId.toHexString();
 	}
 
+	public async replaceUserAccessToken(
+		id: string,
+		accessToken: string,
+		expiresAt: Date
+	): Promise<void> {
+		await this.users.updateOne(
+			{ _id: new ObjectId(id) },
+			{ $set: { accessToken, expiresAt } }
+		);
+	}
+
 	public async getUser(id: string): Promise<User | null> {
 		const userDoc = await this.users.findOne({ _id: new ObjectId(id) });
 		if (!userDoc || !userValidator.check(userDoc)) return null;
 		return {
 			redditId: userDoc.redditId,
+			accessToken: userDoc.accessToken,
+			expiresAt: userDoc.expiresAt,
 			refreshToken: userDoc.refreshToken,
 			scope: userDoc.scope
 		};
