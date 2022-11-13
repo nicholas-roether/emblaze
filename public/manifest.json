@@ -1,0 +1,6 @@
+{
+	"short_name": "emblaze",
+	"name": "emblaze for reddit",
+	"start_url": ".",
+	"display": "standalone"
+}
