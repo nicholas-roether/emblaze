@@ -22,7 +22,7 @@ function handler(
 			if (err instanceof APIError) {
 				return new Response(err.message, { status: err.status });
 			}
-			console.error(err);
+			console.error(`${err}`);
 			if (err instanceof ValidationError) {
 				console.error(
 					"Actual value was:\n" + JSON.stringify(err.actual, undefined, 3)
