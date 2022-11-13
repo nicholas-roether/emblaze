@@ -1,0 +1,38 @@
+@mixin font-sizes($sizes) {
+	font-size: map-get($sizes, "m");
+
+	@each $name, $size in $sizes {
+		&.#{$name} {
+			font-size: $size;
+		}
+	}
+}
+
+@mixin gutter($size) {
+	margin-bottom: spacing($size);
+
+	&.no_gutter {
+		margin-bottom: 0;
+	}
+}
+
+p {
+	font-family: $font-copy;
+	@include font-sizes($font-copy-sizes);
+	@include gutter(2);
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-family: $font-heading;
+	@include font-sizes($font-heading-sizes);
+	@include gutter(1);
+}
+
+a {
+	color: $color-secondary;
+	text-decoration: underline;
+
+	&:hover {
+		color: color-secondary("light");
+	}
+}

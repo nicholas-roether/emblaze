@@ -1,0 +1,59 @@
+button, a.button {
+	@include bg-primary;
+	@include font-copy("m");
+	
+	text-decoration: none;
+	border: none;
+	display: inline-block;
+	cursor: pointer;
+	transition: background-color duration("medium");
+
+	font-weight: 600;
+	padding: spacing(1) spacing(2);
+	border-radius: $border-radius;
+	box-shadow: box-shadow(1);
+
+	&:hover {
+		@include bg-primary("light");
+	}
+
+	&.secondary {
+		@include bg-secondary;
+
+		&:hover {
+			@include bg-secondary("light");
+		}
+	}
+
+	&.surface {
+		background-color: transparent;
+		color: inherit;
+		box-shadow: none;
+
+		&:hover {
+			@include bg-surface("lighter");
+		}
+	}
+
+	&.l {
+		@include font-copy("l");
+		padding: spacing(1.5) spacing(3);
+	}
+
+	&.icon {
+		width: 2.2em;
+		height: 2.2em;
+		padding: 0;
+		border-radius: 10000em;
+
+		&.l {
+			width: 2.5em;
+			height: 2.5em;
+		}
+
+		&.xl {
+			width: 2.75em;
+			height: 2.75em;
+		}
+	}
+}
