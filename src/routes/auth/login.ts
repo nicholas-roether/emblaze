@@ -1,8 +1,9 @@
-import { APIEvent, redirect } from "solid-start";
+import { redirect } from "solid-start";
 import RedditAuth from "~/services/reddit_auth";
 import { usingSession } from "~/services/session_storage";
+import { handler } from "~/utils/api";
 
-export async function GET({ request }: APIEvent) {
+export const GET = handler(async ({ request }) => {
 	const responseHeaders = new Headers();
 	const redirectUrl = await usingSession(
 		request.headers,
@@ -10,4 +11,4 @@ export async function GET({ request }: APIEvent) {
 		(session) => RedditAuth.createLoginRedirect(session)
 	);
 	return redirect(redirectUrl, { headers: responseHeaders });
-}
+});

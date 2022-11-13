@@ -1,8 +1,9 @@
-import { APIEvent, redirect } from "solid-start";
+import { redirect } from "solid-start";
 import RedditAuth from "~/services/reddit_auth";
 import { usingSession } from "~/services/session_storage";
+import { handler } from "~/utils/api";
 
-export async function GET({ request }: APIEvent) {
+export const GET = handler(async ({ request }) => {
 	const url = new URL(request.url);
 	const error = url.searchParams.get("error");
 	const code = url.searchParams.get("code");
@@ -15,17 +16,9 @@ export async function GET({ request }: APIEvent) {
 	}
 
 	const responseHeaders = new Headers();
-	const success = await usingSession(
-		request.headers,
-		responseHeaders,
-		(session) => RedditAuth.authorizeUser(session, state, code)
+	await usingSession(request.headers, responseHeaders, (session) =>
+		RedditAuth.authorizeUser(session, state, code)
 	);
 
-	if (!success) {
-		return new Response("Authorization failed", {
-			status: 401,
-			headers: responseHeaders
-		});
-	}
 	return redirect(RedditAuth.SUCCESS_URI, { headers: responseHeaders });
-}
+});

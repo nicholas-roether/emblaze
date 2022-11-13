@@ -4,6 +4,7 @@ import axios, { AxiosError, AxiosRequestConfig } from "axios";
 import schema, { Validator } from "~/utils/schema";
 import DB from "./database";
 import env from "~/environment";
+import { APIError } from "~/utils/api";
 
 interface RedditAccessTokenResponse {
 	access_token: string;
@@ -92,15 +93,16 @@ class RedditAuth {
 		session: Session,
 		sessionIdentifier: string,
 		accessCode: string
-	): Promise<boolean> {
+	): Promise<void> {
 		const db = await DB.open();
 
 		const currentSessionIdentifier = session.get("identifier");
-		if (typeof currentSessionIdentifier !== "string") return false;
-		if (currentSessionIdentifier !== sessionIdentifier) return false;
+		if (typeof currentSessionIdentifier !== "string")
+			throw new APIError(400, "Malformed session identifier");
+		if (currentSessionIdentifier !== sessionIdentifier)
+			throw new APIError(403, "Incorrect session identifier");
 
 		const newLogin = await this.getAccessToken(accessCode);
-		if (!newLogin) return false;
 		const redditId = await this.getRedditId(newLogin.accessToken);
 
 		const userId = await db.createOrReplaceUser({
@@ -109,8 +111,6 @@ class RedditAuth {
 			scope: this.OAUTH_SCOPES
 		});
 		this.saveLogin(session, newLogin, userId);
-
-		return true;
 	}
 
 	public static async logout(session: Session): Promise<void> {
@@ -165,15 +165,14 @@ class RedditAuth {
 		return userId;
 	}
 
-	private static async getAccessToken(
-		accessCode: string
-	): Promise<NewLogin | null> {
+	private static async getAccessToken(accessCode: string): Promise<NewLogin> {
 		const accessTokenData = await this.requestAccessToken(
 			"authorization_code",
 			"code",
 			accessCode
 		);
-		if (!accessTokenData || !accessTokenData.refreshToken) return null;
+		if (!accessTokenData.refreshToken)
+			throw new Error("Missing refresh token in access token response");
 		return {
 			accessToken: accessTokenData.accessToken,
 			expiresAt: accessTokenData.expiresAt,
@@ -195,7 +194,7 @@ class RedditAuth {
 		grantType: string,
 		tokenName: string,
 		token: string
-	): Promise<AccessTokenData | null> {
+	): Promise<AccessTokenData> {
 		try {
 			const params = new URLSearchParams();
 			params.set("grant_type", grantType);
@@ -213,7 +212,8 @@ class RedditAuth {
 			);
 			redditAccessTokenResponseValidator.assert(res.data);
 
-			if (!this.scopesMatch(res.data.scope.split(" "))) return null;
+			if (!this.scopesMatch(res.data.scope.split(" ")))
+				throw new Error("Access token scope did not match");
 			return {
 				accessToken: res.data.access_token,
 				expiresAt: new Date(Date.now() + res.data.expires_in * 1000),
@@ -221,13 +221,10 @@ class RedditAuth {
 			};
 		} catch (err) {
 			if (err instanceof AxiosError && err.status === 401) {
-				return null;
+				throw new Error("Got 401 when requesting access token");
 			}
-			console.error(
-				`Unexpected error occurred while attempting to get access token: ${err}`
-			);
+			throw err;
 		}
-		return null;
 	}
 
 	private static getLoggedInUser(session: Session): string | null {
