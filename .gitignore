@@ -13,6 +13,7 @@ node_modules
 dist
 .solid
 .output
+.vercel
 
 # Environment
 .env

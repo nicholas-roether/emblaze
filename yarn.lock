@@ -3591,6 +3591,7 @@ __metadata:
     solid-js: ^1.6.0
     solid-start: ^0.2.0
     solid-start-node: ^0.2.0
+    solid-start-vercel: ^0.2.5
     tslib: ^2.4.1
     typescript: ^4.8.4
     undici: ^5.11.0
@@ -6510,6 +6511,22 @@ __metadata:
     undici: ^5.8.0
     vite: "*"
   checksum: b9347a28000d8ca479ab5f703fb1f7d1b4c2fb149b3168d01ddc908bcfc3132dedb9648be7361f00e6b4f9588bc2cc2a2fe514bdfb3ef478c7c959f45c65076e
+  languageName: node
+  linkType: hard
+
+"solid-start-vercel@npm:^0.2.5":
+  version: 0.2.5
+  resolution: "solid-start-vercel@npm:0.2.5"
+  dependencies:
+    "@rollup/plugin-commonjs": ^22.0.2
+    "@rollup/plugin-json": ^4.1.0
+    "@rollup/plugin-node-resolve": ^13.3.0
+    rollup: ^2.79.1
+    terser: ^5.15.1
+  peerDependencies:
+    solid-start: "*"
+    vite: "*"
+  checksum: 4057ca2be9c699d071d3800c6fc5ad34ab9427aef288c14cc2a3f5dd7274a1b95ed3db5eba3ec3511cd70041cd4acd9d5ba626d4547f70abd2c0537879bb3e07
   languageName: node
   linkType: hard
 

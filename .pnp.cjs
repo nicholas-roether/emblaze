@@ -46,6 +46,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["solid-js", "npm:1.6.2"],\
             ["solid-start", "virtual:a4f8ad8b59981df1764c0f92efec8e4b275351dcced314c41f360f174605694fc9dc63a9a17f923a317cecd5b77d0ab4f1f7cbc135031b039fdd0ae3161b5a4f#npm:0.2.5"],\
             ["solid-start-node", "virtual:a4f8ad8b59981df1764c0f92efec8e4b275351dcced314c41f360f174605694fc9dc63a9a17f923a317cecd5b77d0ab4f1f7cbc135031b039fdd0ae3161b5a4f#npm:0.2.5"],\
+            ["solid-start-vercel", "virtual:a4f8ad8b59981df1764c0f92efec8e4b275351dcced314c41f360f174605694fc9dc63a9a17f923a317cecd5b77d0ab4f1f7cbc135031b039fdd0ae3161b5a4f#npm:0.2.5"],\
             ["tslib", "npm:2.4.1"],\
             ["typescript", "patch:typescript@npm%3A4.8.4#~builtin<compat/typescript>::version=4.8.4&hash=701156"],\
             ["undici", "npm:5.12.0"],\
@@ -5100,6 +5101,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["solid-js", "npm:1.6.2"],\
             ["solid-start", "virtual:a4f8ad8b59981df1764c0f92efec8e4b275351dcced314c41f360f174605694fc9dc63a9a17f923a317cecd5b77d0ab4f1f7cbc135031b039fdd0ae3161b5a4f#npm:0.2.5"],\
             ["solid-start-node", "virtual:a4f8ad8b59981df1764c0f92efec8e4b275351dcced314c41f360f174605694fc9dc63a9a17f923a317cecd5b77d0ab4f1f7cbc135031b039fdd0ae3161b5a4f#npm:0.2.5"],\
+            ["solid-start-vercel", "virtual:a4f8ad8b59981df1764c0f92efec8e4b275351dcced314c41f360f174605694fc9dc63a9a17f923a317cecd5b77d0ab4f1f7cbc135031b039fdd0ae3161b5a4f#npm:0.2.5"],\
             ["tslib", "npm:2.4.1"],\
             ["typescript", "patch:typescript@npm%3A4.8.4#~builtin<compat/typescript>::version=4.8.4&hash=701156"],\
             ["undici", "npm:5.12.0"],\
@@ -8494,6 +8496,37 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             "@types/vite",\
             "solid-start",\
             "undici",\
+            "vite"\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["solid-start-vercel", [\
+        ["npm:0.2.5", {\
+          "packageLocation": "./.yarn/cache/solid-start-vercel-npm-0.2.5-ae778458ef-4057ca2be9.zip/node_modules/solid-start-vercel/",\
+          "packageDependencies": [\
+            ["solid-start-vercel", "npm:0.2.5"]\
+          ],\
+          "linkType": "SOFT"\
+        }],\
+        ["virtual:a4f8ad8b59981df1764c0f92efec8e4b275351dcced314c41f360f174605694fc9dc63a9a17f923a317cecd5b77d0ab4f1f7cbc135031b039fdd0ae3161b5a4f#npm:0.2.5", {\
+          "packageLocation": "./.yarn/__virtual__/solid-start-vercel-virtual-090ae1472c/0/cache/solid-start-vercel-npm-0.2.5-ae778458ef-4057ca2be9.zip/node_modules/solid-start-vercel/",\
+          "packageDependencies": [\
+            ["solid-start-vercel", "virtual:a4f8ad8b59981df1764c0f92efec8e4b275351dcced314c41f360f174605694fc9dc63a9a17f923a317cecd5b77d0ab4f1f7cbc135031b039fdd0ae3161b5a4f#npm:0.2.5"],\
+            ["@rollup/plugin-commonjs", "virtual:61f31e0f4014f1e89b44679a4522417a0cf545a47db2595a07a286847bf333464a6a6b50b19d8d0f457da5f4d0ef8df15f12c1652c90fb7ac454f8dd8e96856d#npm:22.0.2"],\
+            ["@rollup/plugin-json", "virtual:61f31e0f4014f1e89b44679a4522417a0cf545a47db2595a07a286847bf333464a6a6b50b19d8d0f457da5f4d0ef8df15f12c1652c90fb7ac454f8dd8e96856d#npm:4.1.0"],\
+            ["@rollup/plugin-node-resolve", "virtual:61f31e0f4014f1e89b44679a4522417a0cf545a47db2595a07a286847bf333464a6a6b50b19d8d0f457da5f4d0ef8df15f12c1652c90fb7ac454f8dd8e96856d#npm:13.3.0"],\
+            ["@types/solid-start", null],\
+            ["@types/vite", null],\
+            ["rollup", "npm:2.79.1"],\
+            ["solid-start", "virtual:a4f8ad8b59981df1764c0f92efec8e4b275351dcced314c41f360f174605694fc9dc63a9a17f923a317cecd5b77d0ab4f1f7cbc135031b039fdd0ae3161b5a4f#npm:0.2.5"],\
+            ["terser", "npm:5.15.1"],\
+            ["vite", "virtual:a4f8ad8b59981df1764c0f92efec8e4b275351dcced314c41f360f174605694fc9dc63a9a17f923a317cecd5b77d0ab4f1f7cbc135031b039fdd0ae3161b5a4f#npm:3.2.3"]\
+          ],\
+          "packagePeers": [\
+            "@types/solid-start",\
+            "@types/vite",\
+            "solid-start",\
             "vite"\
           ],\
           "linkType": "HARD"\
