@@ -1,0 +1,25 @@
+@import "../styles/utils.scss";
+
+.textXS {
+	@include font-copy("xs");
+}
+
+.textS {
+	@include font-copy("s");
+}
+
+.textM {
+	@include font-copy("m");
+}
+
+.textL {
+	@include font-copy("l");
+}
+
+.textXL {
+	@include font-copy("xl");
+}
+
+.paragraph {
+	margin-bottom: spacing(2);
+}

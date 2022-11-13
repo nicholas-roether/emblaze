@@ -1,4 +1,6 @@
-button, a.button {
+@import "../styles/utils";
+
+.button {
 	@include bg-primary;
 	@include font-copy("m");
 	
@@ -35,25 +37,8 @@ button, a.button {
 		}
 	}
 
-	&.l {
+	&.large {
 		@include font-copy("l");
 		padding: spacing(1.5) spacing(3);
-	}
-
-	&.icon {
-		width: 2.2em;
-		height: 2.2em;
-		padding: 0;
-		border-radius: 10000em;
-
-		&.l {
-			width: 2.5em;
-			height: 2.5em;
-		}
-
-		&.xl {
-			width: 2.75em;
-			height: 2.75em;
-		}
 	}
 }

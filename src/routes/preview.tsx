@@ -1,63 +1,64 @@
+import Button from "~/components/button";
+import Heading from "~/components/heading";
+import IconButton from "~/components/icon_button";
+import Text from "~/components/text";
+
 export default function preview() {
 	return (
 		<>
-			<h1 class="xs">Heading XS</h1>
-			<p class="xs">
+			<Heading size="xs">Heading XS</Heading>
+			<Text paragraph size="xs">
 				Lorem ipsum dolor sit amet consectetur, adipisicing elit. Maiores
 				deserunt sunt nisi vitae mollitia corrupti autem voluptatum error
 				dolorem totam quidem, in optio natus libero debitis facilis! Blanditiis,
 				totam iure?
-			</p>
+			</Text>
 
-			<h1 class="s">Heading S</h1>
-			<p class="s">
+			<Heading size="s">Heading S</Heading>
+			<Text paragraph size="s">
 				Lorem ipsum dolor sit amet consectetur, adipisicing elit. Maiores
 				deserunt sunt nisi vitae mollitia corrupti autem voluptatum error
 				dolorem totam quidem, in optio natus libero debitis facilis! Blanditiis,
 				totam iure?
-			</p>
+			</Text>
 
-			<h1 class="m">Heading M</h1>
-			<p class="m">
+			<Heading size="m">Heading M</Heading>
+			<Text paragraph size="m">
 				Lorem ipsum dolor sit amet consectetur, adipisicing elit. Maiores
 				deserunt sunt nisi vitae mollitia corrupti autem voluptatum error
 				dolorem totam <a href="/#">quidem</a>, in optio natus libero debitis
 				facilis! Blanditiis, totam iure?
-			</p>
+			</Text>
 
-			<h1 class="l">Heading L</h1>
-			<p class="l">
+			<Heading size="l">Heading L</Heading>
+			<Text paragraph size="l">
 				Lorem ipsum dolor sit amet consectetur, adipisicing elit. Maiores
 				deserunt sunt nisi vitae mollitia <em>corrupti</em> autem voluptatum
 				error dolorem totam quidem, in optio natus libero debitis facilis!
 				Blanditiis, totam iure?
-			</p>
+			</Text>
 
-			<h1 class="xl">Heading XL</h1>
-			<p class="xl">
+			<Heading size="xl">Heading XL</Heading>
+			<Text paragraph size="xl">
 				Lorem ipsum dolor sit amet consectetur, adipisicing elit. Maiores
 				deserunt sunt nisi vitae mollitia corrupti autem voluptatum error
 				dolorem totam quidem, in optio natus libero debitis <b>facilis!</b>{" "}
 				Blanditiis, totam iure?
-			</p>
+			</Text>
 
-			<p>
-				<button class="m">Test</button>
-			</p>
+			<Button>Test</Button>
 
-			<p>
-				<a class="button secondary m" href="/#">
-					Test link button
-				</a>
-			</p>
+			<Button variant="surface">Test 2</Button>
 
-			<p>
-				<button class="surface l">Test</button>
-			</p>
+			<Button variant="secondary" href="/#">
+				Test link button
+			</Button>
 
-			<p>
-				<button class="icon l">:)</button>
-			</p>
+			<Button large>Large button</Button>
+
+			<IconButton large>:)</IconButton>
+
+			<IconButton>:(</IconButton>
 		</>
 	);
 }
