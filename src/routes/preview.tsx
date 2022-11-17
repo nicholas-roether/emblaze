@@ -1,7 +1,7 @@
-import Button from "~/components/button";
-import Heading from "~/components/heading";
-import IconButton from "~/components/icon_button";
-import Text from "~/components/text";
+import Button from "~/components/basic/button";
+import Heading from "~/components/basic/heading";
+import IconButton from "~/components/basic/icon_button";
+import Text from "~/components/basic/text";
 
 export default function preview() {
 	return (
