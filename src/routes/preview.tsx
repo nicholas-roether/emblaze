@@ -2,10 +2,11 @@ import Button from "~/components/basic/button";
 import Heading from "~/components/basic/heading";
 import IconButton from "~/components/basic/icon_button";
 import Text from "~/components/basic/text";
+import Page from "~/components/page/page";
 
 export default function preview() {
 	return (
-		<>
+		<Page title="Preview">
 			<Heading size="xs">Heading XS</Heading>
 			<Text paragraph size="xs">
 				Lorem ipsum dolor sit amet consectetur, adipisicing elit. Maiores
@@ -59,6 +60,6 @@ export default function preview() {
 			<IconButton large>:)</IconButton>
 
 			<IconButton>:(</IconButton>
-		</>
+		</Page>
 	);
 }
