@@ -1,5 +1,5 @@
 import Heading from "~/components/basic/heading";
-import Page from "~/components/page/page";
+import Page from "~/components/page";
 
 export default function Home() {
 	return (

@@ -2,7 +2,7 @@ import Button from "~/components/basic/button";
 import Heading from "~/components/basic/heading";
 import IconButton from "~/components/basic/icon_button";
 import Text from "~/components/basic/text";
-import Page from "~/components/page/page";
+import Page from "~/components/page";
 
 export default function preview() {
 	return (

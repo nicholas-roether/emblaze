@@ -14,3 +14,5 @@ const Page: Component<PageProps> = (props) => (
 );
 
 export default Page;
+
+export type { PageProps };
