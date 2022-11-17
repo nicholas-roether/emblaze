@@ -1,4 +1,6 @@
 import { APIEvent } from "solid-start";
+import { Session } from "solid-start/session/sessions";
+import { usingSession } from "~/services/session_storage";
 import { ValidationError } from "./schema";
 
 class APIError extends Error {
@@ -13,11 +15,18 @@ class APIError extends Error {
 }
 
 function handler(
-	cb: (event: APIEvent) => Response | Promise<Response>
+	cb: (event: APIEvent, session: Session) => Response | Promise<Response>
 ): (event: APIEvent) => Promise<Response> {
 	return async (event) => {
 		try {
-			return await cb(event);
+			const responseHeaders = new Headers();
+			const res = await usingSession(
+				event.request.headers,
+				responseHeaders,
+				async (session) => await cb(event, session)
+			);
+			responseHeaders.forEach((value, name) => res.headers.append(name, value));
+			return res;
 		} catch (err) {
 			if (err instanceof APIError) {
 				return new Response(err.message, { status: err.status });
