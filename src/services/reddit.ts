@@ -1,5 +1,4 @@
 import axios from "axios";
-import { setupCache } from "axios-cache-adapter";
 import { User } from "~/models";
 import schema, { Validator } from "~/utils/schema";
 import RedditAuth from "./reddit_auth";
@@ -35,21 +34,20 @@ const redditAPIUserValidator: Validator<RedditAPIUser> = schema.object(
 	"RedditApiUser"
 );
 
-const REDDIT_ENDPOINT = "https://oauth.reddit.com/api/v1";
+const REDDIT_ENDPOINT = "https://oauth.reddit.com/api";
 
 class Reddit {
 	static readonly ENDPOINT = this.getEndpoint();
-	private static readonly cache = setupCache({
-		maxAge: 30 * 1000
-	});
 	private static readonly api = axios.create({
 		baseURL: this.ENDPOINT,
-		params: { raw_json: "1" },
-		adapter: this.cache.adapter
+		params: { raw_json: "1" }
 	});
 
 	public static async me(login: string): Promise<User> {
-		const res = await this.api.get("/me", RedditAuth.createAuthConfig(login));
+		const res = await this.api.get(
+			"/v1/me",
+			RedditAuth.createAuthConfig(login)
+		);
 		return this.createUser(res.data);
 	}
 
