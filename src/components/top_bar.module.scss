@@ -5,6 +5,7 @@
 
 	height: 3em;
 	padding: spacing(0.5);
+	padding-right: spacing(1);
 	display: flex;
 	position: sticky;
 	top: 0;
@@ -15,10 +16,15 @@
 		height: 100%;
 	}
 
+	.spacer {
+		flex: 1;
+	}
+
 	@media (min-width: breakpoint("sm")) {
 		@include bg-surface("normal");
 		box-shadow: none;
 		height: 3.5em;
 		padding: spacing(1);
+		padding-right: spacing(2);
 	}
 }
