@@ -30,6 +30,10 @@ $color-secondary: color-secondary();
 	@return 2px * $strength 2px * $strength 5px * $strength $color-shadow;
 }
 
+@function breakpoint($name) {
+	@return map-get($breakpoints, $name);
+}
+
 @mixin bg-surface($variant: "normal") {
 	background-color: color-surface($variant);
 	color: $color-on-surface;

@@ -25,6 +25,15 @@ $durations: (
 	"long": 500ms
 );
 
+$breakpoints: (
+	"xs": 0,
+	"sm": 576px,
+	"md": 768px,
+	"lg": 992px,
+	"xl": 1200px,
+	"xxl": 1400px
+);
+
 $spacing_factor: 8;
 
 $shadow_factor: 1.5;
