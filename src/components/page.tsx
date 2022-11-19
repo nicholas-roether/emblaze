@@ -1,5 +1,6 @@
 import { Component, JSX } from "solid-js";
 import { Title } from "solid-start";
+import TopBar from "./top_bar";
 
 interface PageProps {
 	title: string;
@@ -9,6 +10,7 @@ interface PageProps {
 const Page: Component<PageProps> = (props) => (
 	<>
 		<Title>emblaze / {props.title}</Title>
+		<TopBar />
 		{props.children}
 	</>
 );

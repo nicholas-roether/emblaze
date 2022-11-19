@@ -1,0 +1,24 @@
+@import "../styles/utils.scss";
+
+.topBar {
+	@include bg-surface("light");
+
+	height: 3em;
+	padding: spacing(0.5);
+	display: flex;
+	position: sticky;
+	top: 0;
+	width: 100%;
+	box-shadow: box-shadow(1);
+
+	.logo {
+		height: 100%;
+	}
+
+	@media (min-width: breakpoint("sm")) {
+		@include bg-surface("normal");
+		box-shadow: none;
+		height: 3.5em;
+		padding: spacing(1);
+	}
+}
