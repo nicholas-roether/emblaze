@@ -1,6 +1,7 @@
 import Button from "~/components/basic/button";
 import Heading from "~/components/basic/heading";
 import IconButton from "~/components/basic/icon_button";
+import Link from "~/components/basic/link";
 import Text from "~/components/basic/text";
 import Page from "~/components/page";
 
@@ -27,8 +28,8 @@ export default function preview() {
 			<Text paragraph size="m">
 				Lorem ipsum dolor sit amet consectetur, adipisicing elit. Maiores
 				deserunt sunt nisi vitae mollitia corrupti autem voluptatum error
-				dolorem totam <a href="/#">quidem</a>, in optio natus libero debitis
-				facilis! Blanditiis, totam iure?
+				dolorem totam <Link href="/#">quidem</Link>, in optio natus libero
+				debitis facilis! Blanditiis, totam iure?
 			</Text>
 
 			<Heading size="l">Heading L</Heading>

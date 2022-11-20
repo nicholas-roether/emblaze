@@ -12,8 +12,8 @@ import {
 	Scripts,
 	Link
 } from "solid-start";
-
-import "./styles/root.scss";
+import theme from "./theme";
+import { renderStyleSheets } from "./utils/css";
 
 export default function Root() {
 	return (
@@ -38,6 +38,21 @@ export default function Root() {
 					href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Work+Sans:ital,wght@0,300;0,500;0,600;0,700;1,300;1,500;1,600;1,700&display=swap"
 					rel="stylesheet"
 				/>
+				<style>{`
+					* {
+						margin: 0;
+						padding: 0;
+						box-sizing: border-box;
+					}
+
+					:root {
+						background-color: ${theme.colors.background};
+						color: ${theme.colors.text.onBackground};
+						font-family: ${theme.fonts.copy};
+						font-size: ${theme.fontSizes.copy1};
+					}
+				`}</style>
+				<style id="jss">{renderStyleSheets()}</style>
 			</Head>
 			<Body>
 				<Suspense>

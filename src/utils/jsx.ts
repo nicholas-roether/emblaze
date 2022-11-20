@@ -1,5 +1,7 @@
 type ClassSpecifier = string | [string, boolean] | [string[], boolean];
 
+// TODO remove this file
+
 function cls(...specifiers: ClassSpecifier[]) {
 	const classes: string[] = [];
 	specifiers.forEach((specifier) => {
