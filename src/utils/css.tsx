@@ -88,7 +88,7 @@ const ComponentStyles: Component = () => {
 				id="component-styles"
 				data-class-name-map={JSON.stringify(classNameMap)}
 			>
-				{styleSheets.toString()}
+				{styleSheets.toString({ format: false })}
 			</style>
 		</Show>
 	);
