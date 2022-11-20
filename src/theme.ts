@@ -35,7 +35,7 @@ const theme = new Theme({
 		text: {
 			onBackground: "#fff",
 			onSurface: "#fff",
-			onPrimary: "#fff",
+			onPrimary: "#000",
 			onSecondary: "#000"
 		}
 	}
