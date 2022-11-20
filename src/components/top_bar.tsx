@@ -1,5 +1,5 @@
-import { Component, Suspense, useContext } from "solid-js";
-import { css } from "~/utils/css";
+import { Component, Show, Suspense, useContext } from "solid-js";
+import { cls, css } from "~/utils/css";
 import Profile from "./basic/profile";
 import UserContext from "./context/user_context";
 
@@ -26,6 +26,14 @@ const styles = css((theme) => ({
 			paddingRight: theme.spacing(2)
 		}
 	},
+	topBarBehind: {
+		zIndex: -1,
+		position: "fixed",
+		backgroundColor: "transparent",
+		color: theme.colors.text.onBackground,
+		boxShadow: "none"
+	},
+
 	image: {
 		height: "100%"
 	},
@@ -52,11 +60,22 @@ const UserMenu: Component = () => {
 	);
 };
 
-const TopBar: Component = () => (
-	<header class={styles.topBar}>
+interface TopBarProps {
+	noUserMenu?: boolean;
+	behind?: boolean;
+}
+
+const TopBar: Component<TopBarProps> = (props) => (
+	<header
+		class={cls(styles.topBar, {
+			[styles.topBarBehind]: props.behind ?? false
+		})}
+	>
 		<Logo />
 		<div class={styles.spacer} />
-		<UserMenu />
+		<Show when={!props.noUserMenu}>
+			<UserMenu />
+		</Show>
 	</header>
 );
 

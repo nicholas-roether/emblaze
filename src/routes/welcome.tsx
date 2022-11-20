@@ -6,6 +6,7 @@ import { lerpColor } from "~/utils/color";
 import Card from "~/components/basic/card";
 import Text from "~/components/basic/text";
 import Button from "~/components/basic/button";
+import TopBar from "~/components/top_bar";
 
 const styles = css((theme) => ({
 	page: {
@@ -136,10 +137,11 @@ const WelcomeCard: Component = () => (
 );
 
 const Welcome: Component = () => (
-	<main class={styles.page}>
+	<div class={styles.page}>
+		<TopBar noUserMenu behind />
 		<Title>emblaze / welcome</Title>
 		<WelcomeCard />
-	</main>
+	</div>
 );
 
 export default Welcome;
