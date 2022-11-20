@@ -5,6 +5,7 @@ import schema, { Validator } from "~/utils/schema";
 import DB from "./database";
 import env from "~/environment";
 import { APIError } from "~/utils/api";
+import Endpoints from "./endpoints";
 
 interface RedditAccessTokenResponse {
 	access_token: string;
@@ -40,14 +41,10 @@ interface AccessTokenData {
 	expiresAt: Date;
 	refreshToken?: string;
 }
-
-const REDDIT_AUTH_ENDPOINT = "https://www.reddit.com/api/v1";
-const REDDIT_ENDPOINT = "https://oauth.reddit.com/api/v1";
-
 class RedditAuth {
 	public static readonly SUCCESS_URI = env().ORIGIN;
-	private static readonly ENDPOINT = this.getEndpoint();
-	private static readonly USER_ID_ENDPOINT = this.getUserIdEndpoint();
+	private static readonly ENDPOINT = Endpoints.REDDIT_AUTH;
+	private static readonly USER_ID_ENDPOINT = Endpoints.REDDIT + "/v1/me";
 	private static readonly RETURN_URI = env().ORIGIN + "/auth/return";
 	private static readonly OAUTH_SCOPES = [
 		"account",
@@ -79,7 +76,7 @@ class RedditAuth {
 		const sessionIdentifer = this.generateSessionIdentifier();
 		session.set("identifier", sessionIdentifer);
 
-		const loginRedirect = new URL(this.ENDPOINT + "/authorize");
+		const loginRedirect = new URL(this.ENDPOINT + "/v1/authorize");
 		loginRedirect.searchParams.set("client_id", env().REDDIT_CLIENT_ID);
 		loginRedirect.searchParams.set("response_type", "code");
 		loginRedirect.searchParams.set("state", sessionIdentifer);
@@ -210,7 +207,7 @@ class RedditAuth {
 			params.set("redirect_uri", this.RETURN_URI);
 
 			const res = await axios.post(
-				this.ENDPOINT + "/access_token",
+				this.ENDPOINT + "/v1/access_token",
 				params.toString(),
 				{
 					auth: {
@@ -256,26 +253,6 @@ class RedditAuth {
 
 	private static scopesMatch(scopes: string[]) {
 		return this.OAUTH_SCOPES.every((scope) => scopes.includes(scope));
-	}
-
-	private static getEndpoint(): string {
-		if (
-			process.env.NODE_ENV !== "production" &&
-			process.env.DEBUG_REDDIT_AUTH_ENDPOINT
-		) {
-			return process.env.DEBUG_REDDIT_AUTH_ENDPOINT;
-		}
-		return REDDIT_AUTH_ENDPOINT;
-	}
-
-	private static getUserIdEndpoint(): string {
-		if (
-			process.env.NODE_ENV !== "production" &&
-			process.env.DEBUG_REDDIT_ENDPOINT
-		) {
-			return process.env.DEBUG_REDDIT_ENDPOINT + "/me";
-		}
-		return REDDIT_ENDPOINT + "/me";
 	}
 }
 
