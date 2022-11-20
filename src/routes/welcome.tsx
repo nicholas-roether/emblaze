@@ -55,7 +55,8 @@ const styles = css((theme) => ({
 	textMask: {
 		backgroundColor: "#000",
 		color: "#fff",
-		mixBlendMode: "multiply"
+		mixBlendMode: "multiply",
+		userSelect: "none"
 	},
 	backgroundMask: {
 		backgroundColor: theme.colors.surface[0],
@@ -119,10 +120,10 @@ const AnimatedText: Component = () => (
 		<div class={cls(styles.layer)}>
 			<Flames />
 		</div>
-		<div class={cls(styles.layer, styles.textMask)}>emblaze</div>
-		<div class={cls(styles.layer, styles.backgroundMask)} aria-hidden>
+		<div class={cls(styles.layer, styles.textMask)} aria-hidden>
 			emblaze
 		</div>
+		<div class={cls(styles.layer, styles.backgroundMask)}>emblaze</div>
 	</div>
 );
 
