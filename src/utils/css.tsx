@@ -40,23 +40,43 @@ function applyTheme<K extends string, D extends RawStylesDef<K>>(
 	return stylesDef instanceof Function ? stylesDef(theme) : stylesDef;
 }
 
+function loadClassNamesFromMap<K extends string>(
+	stylesHash: string,
+	styles: Partial<Styles<K, unknown, undefined>>
+): Record<K, string> | null {
+	const classNames = classNameMap[stylesHash];
+	if (!classNames) return null;
+	for (const className in styles) {
+		if (!(className in classNames)) return null;
+	}
+	return classNames as Record<K, string>;
+}
+
+function insertDynamicStyles<K extends string>(
+	stylesHash: string,
+	styles: Partial<Styles<K, unknown, undefined>>
+): Record<K, string> {
+	const id = `dynamic-styles-${stylesHash}`;
+	const previous = document.getElementById(id);
+	if (previous) previous.remove();
+
+	const elem = document.createElement("style");
+	const sheet = jss.createStyleSheet(styles);
+	const css = sheet.toString({ format: false });
+	elem.id = id;
+	elem.innerHTML = css;
+	document.head.appendChild(elem);
+	return sheet.classes;
+}
+
 function css<K extends string>(stylesDef: StylesDef<K>): Record<K, string> {
 	const styles = applyTheme(stylesDef);
 	const stylesHash = md5(JSON.stringify(styles));
 
 	if (!isServer) {
-		const classNames = classNameMap[stylesHash];
-		if (!classNames) {
-			throw new Error(`client/server discrepancy: missing class name map`);
-		}
-		for (const className in styles) {
-			if (!(className in classNames)) {
-				throw new Error(
-					`client/server discrepancy: missing class name '${className}'`
-				);
-			}
-		}
-		return classNames as Record<K, string>;
+		const classNames = loadClassNamesFromMap(stylesHash, styles);
+		if (classNames) return classNames as Record<K, string>;
+		else return insertDynamicStyles(stylesHash, styles);
 	}
 
 	const sheet = jss.createStyleSheet(styles);
