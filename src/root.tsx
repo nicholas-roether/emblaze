@@ -29,11 +29,11 @@ export default function Root() {
 	return (
 		<Html lang="en" class={styles.root}>
 			<Head>
-				<Meta charset="utf-8" />
 				<Meta
 					httpEquiv="Content-Security-Policy"
 					content="default-src 'self' reddit.com *.reddit.com"
 				/>
+				<Meta charset="utf-8" />
 				<Meta name="viewport" content="width=device-with, initial-scale=1" />
 				<Link rel="favicon" href="/favicon.ico" />
 				<Link rel="manifest" href="/manifest.json" />
