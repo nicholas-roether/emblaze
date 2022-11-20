@@ -1,6 +1,11 @@
 import { Component } from "solid-js";
+import { css } from "~/utils/css";
 
-import styles from "./profile.module.scss";
+const styles = css({
+	profile: {
+		borderRadius: "1000000px"
+	}
+});
 
 interface ProfileProps {
 	src?: string;

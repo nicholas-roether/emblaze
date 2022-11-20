@@ -1,20 +1,47 @@
-import { Component, JSX } from "solid-js";
-import { cls } from "~/utils/jsx";
+import { Component, ComponentProps } from "solid-js";
+import { css, cls } from "~/utils/css";
 
-import styles from "./icon_button.module.scss";
+const styles = css((theme) => ({
+	iconButton: {
+		width: "2.4em",
+		height: "2.4em",
+		fontSize: "1em",
+		borderRadius: "1000000em",
+		border: "none",
+		backgroundColor: theme.colors.background,
+		transition: "background-color",
+		transitionDuration: theme.durations.medium,
+		color: theme.colors.text.onBackground,
+		verticalAlign: "middle",
+		cursor: "pointer",
 
-interface IconButtonProps {
+		"&:hover": {
+			backgroundColor: theme.colors.surface[0],
+			color: theme.colors.text.onSurface
+		},
+
+		"&.large": {
+			width: "2.6em",
+			height: "2.6em",
+			fontSize: "1.3em"
+		}
+	}
+}));
+
+interface IconButtonProps extends ComponentProps<"button"> {
 	large?: boolean;
-	children?: JSX.Element;
 }
 
 const IconButton: Component<IconButtonProps> = (props) => {
 	return (
 		<button
-			class={cls(styles.iconButton, [styles.large, props.large ?? false])}
-		>
-			{props.children}
-		</button>
+			{...props}
+			class={cls(
+				styles.iconButton,
+				{ large: props.large ?? false },
+				props.class
+			)}
+		/>
 	);
 };
 
