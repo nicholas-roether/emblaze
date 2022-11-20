@@ -30,10 +30,12 @@ const styles = css((theme) => ({
 	},
 	flames: {
 		width: "100%",
-		height: "100%"
+		height: "100%",
+		backgroundColor: theme.colors.primary[500]
 	},
 	layerWrapper: {
 		position: "relative",
+		overflow: "hidden",
 		width: "100%",
 		fontSize: "6em",
 		fontFamily: theme.fonts.heading,
@@ -85,11 +87,12 @@ const Flames: Component = () => {
 			for (let y = 0; y < canvas.height; y++) {
 				for (let x = 0; x < canvas.width; x++) {
 					const index = 4 * (x + y * canvas.width);
-					const noiseVal = noise(
+					let noiseVal = noise(
 						FLAMES_SCALE * x,
 						FLAMES_SCALE * y,
 						FLAMES_SCALE * FLAMES_SPEED * time
 					);
+					noiseVal = (noiseVal + 1) / 2; // [-1, 1] -> [0, 1]
 					const color = lerpColor(FLAMES_COLOR_1, FLAMES_COLOR_2, noiseVal);
 					imageData.data[index + 0] = color[0];
 					imageData.data[index + 1] = color[1];
