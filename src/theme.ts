@@ -1,6 +1,6 @@
-import { Theme } from "./utils/theming";
+import { Theme, ThemeData } from "./utils/theming";
 
-const theme: Theme = {
+const theme: ThemeData = new Theme({
 	fonts: {
 		heading: "'Crimson Text', serif",
 		copy: "'Work Sans', sans-serif"
@@ -38,38 +38,7 @@ const theme: Theme = {
 			onPrimary: "#fff",
 			onSecondary: "#000"
 		}
-	},
-	fontSizes: {
-		title1: "4em",
-		title2: "2.5em",
-
-		heading1: "2em",
-		heading2: "1.8em",
-		heading3: "1.65em",
-		heading4: "1.5em",
-		heading5: "1.35em",
-		heading6: "1.2em",
-
-		copy1: "1em",
-		copy2: "0.85em",
-		copy3: "0.7em"
-	},
-	borderRadius: "5px",
-	durations: {
-		short: "50ms",
-		medium: "200ms",
-		long: "500ms"
-	},
-	breakpoints: {
-		xs: "0",
-		sm: "576px",
-		md: "768px",
-		lg: "992px",
-		xl: "1200px",
-		xxl: "1400px"
-	},
-	spacingFactor: 8,
-	shadowFactor: 1.5
-};
+	}
+});
 
 export default theme;
