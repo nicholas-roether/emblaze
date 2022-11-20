@@ -29,11 +29,6 @@ export default function Root() {
 	return (
 		<Html lang="en" class={styles.root}>
 			<Head>
-				<Title>emblaze</Title>
-				<Meta
-					name="description"
-					content="A minimal, fast and responsive reddit client"
-				/>
 				<Meta charset="utf-8" />
 				<Meta name="viewport" content="width=device-with, initial-scale=1" />
 				<Link rel="favicon" href="/favicon.ico" />
@@ -49,6 +44,11 @@ export default function Root() {
 					rel="stylesheet"
 				/>
 				<ComponentStyles />
+				<Title>emblaze</Title>
+				<Meta
+					name="description"
+					content="A minimal, fast and responsive reddit client"
+				/>
 			</Head>
 			<Body>
 				<Suspense>
