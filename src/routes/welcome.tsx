@@ -120,7 +120,7 @@ const AnimatedText: Component = () => (
 		<div class={cls(styles.layer)}>
 			<Flames />
 		</div>
-		<div class={cls(styles.layer, styles.textMask)} aria-hidden>
+		<div class={cls(styles.layer, styles.textMask)} aria-hidden="true">
 			emblaze
 		</div>
 		<div class={cls(styles.layer, styles.backgroundMask)}>emblaze</div>
