@@ -13,7 +13,7 @@ import {
 	Link
 } from "solid-start";
 import theme from "./theme";
-import { renderStyleSheets } from "./utils/css";
+import { ComponentStyles } from "./utils/css";
 
 export default function Root() {
 	return (
@@ -52,7 +52,7 @@ export default function Root() {
 						font-size: ${theme.fontSizes.copy1};
 					}
 				`}</style>
-				<style id="jss">{renderStyleSheets()}</style>
+				<ComponentStyles />
 			</Head>
 			<Body>
 				<Suspense>
