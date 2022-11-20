@@ -13,7 +13,7 @@ export default function Home() {
 	return (
 		<UserContext.Provider value={user}>
 			<Page title="Home">
-				<Heading size="xl">Home</Heading>
+				<Heading size={1}>Home</Heading>
 			</Page>
 		</UserContext.Provider>
 	);
