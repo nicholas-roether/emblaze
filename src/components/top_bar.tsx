@@ -26,7 +26,7 @@ const styles = css((theme) => ({
 			paddingRight: theme.spacing(2)
 		}
 	},
-	logo: {
+	image: {
 		height: "100%"
 	},
 	spacer: {
@@ -35,7 +35,7 @@ const styles = css((theme) => ({
 }));
 
 const Logo: Component = () => (
-	<img class={styles.logo} src="/images/emblaze-icon.svg" alt="emblaze" />
+	<img class={styles.image} src="/images/emblaze-icon.svg" alt="emblaze" />
 );
 
 const UserMenu: Component = () => {
@@ -44,6 +44,7 @@ const UserMenu: Component = () => {
 	return (
 		<Suspense fallback="Loading...">
 			<Profile
+				class={styles.image}
 				src={user?.()?.profilePicture}
 				alt={user?.()?.name ?? "Loading..."}
 			/>
