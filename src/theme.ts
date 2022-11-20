@@ -1,6 +1,6 @@
-import { Theme, ThemeData } from "./utils/theming";
+import { Theme } from "./utils/theming";
 
-const theme: ThemeData = new Theme({
+const theme = new Theme({
 	fonts: {
 		heading: "'Crimson Text', serif",
 		copy: "'Work Sans', sans-serif"
