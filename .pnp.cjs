@@ -47,7 +47,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["md5", "npm:2.3.0"],\
             ["mongodb", "npm:4.11.0"],\
             ["prettier", "npm:2.7.1"],\
-            ["sass", "npm:1.56.1"],\
             ["solid-js", "npm:1.6.2"],\
             ["solid-start", "virtual:a4f8ad8b59981df1764c0f92efec8e4b275351dcced314c41f360f174605694fc9dc63a9a17f923a317cecd5b77d0ab4f1f7cbc135031b039fdd0ae3161b5a4f#npm:0.2.5"],\
             ["solid-start-node", "virtual:a4f8ad8b59981df1764c0f92efec8e4b275351dcced314c41f360f174605694fc9dc63a9a17f923a317cecd5b77d0ab4f1f7cbc135031b039fdd0ae3161b5a4f#npm:0.2.5"],\
@@ -5145,7 +5144,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["md5", "npm:2.3.0"],\
             ["mongodb", "npm:4.11.0"],\
             ["prettier", "npm:2.7.1"],\
-            ["sass", "npm:1.56.1"],\
             ["solid-js", "npm:1.6.2"],\
             ["solid-start", "virtual:a4f8ad8b59981df1764c0f92efec8e4b275351dcced314c41f360f174605694fc9dc63a9a17f923a317cecd5b77d0ab4f1f7cbc135031b039fdd0ae3161b5a4f#npm:0.2.5"],\
             ["solid-start-node", "virtual:a4f8ad8b59981df1764c0f92efec8e4b275351dcced314c41f360f174605694fc9dc63a9a17f923a317cecd5b77d0ab4f1f7cbc135031b039fdd0ae3161b5a4f#npm:0.2.5"],\
@@ -6704,15 +6702,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/ignore-npm-5.2.0-fc4b58a4f3-6b1f926792.zip/node_modules/ignore/",\
           "packageDependencies": [\
             ["ignore", "npm:5.2.0"]\
-          ],\
-          "linkType": "HARD"\
-        }]\
-      ]],\
-      ["immutable", [\
-        ["npm:4.1.0", {\
-          "packageLocation": "./.yarn/cache/immutable-npm-4.1.0-f6635927b8-b9bc1f14fb.zip/node_modules/immutable/",\
-          "packageDependencies": [\
-            ["immutable", "npm:4.1.0"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -8510,18 +8499,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
-      ["sass", [\
-        ["npm:1.56.1", {\
-          "packageLocation": "./.yarn/cache/sass-npm-1.56.1-d5befb920f-78e693e599.zip/node_modules/sass/",\
-          "packageDependencies": [\
-            ["sass", "npm:1.56.1"],\
-            ["chokidar", "npm:3.5.3"],\
-            ["immutable", "npm:4.1.0"],\
-            ["source-map-js", "npm:1.0.2"]\
-          ],\
-          "linkType": "HARD"\
-        }]\
-      ]],\
       ["semver", [\
         ["npm:6.3.0", {\
           "packageLocation": "./.yarn/cache/semver-npm-6.3.0-b3eace8bfd-1b26ecf6db.zip/node_modules/semver/",\
@@ -9449,7 +9426,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["postcss", "npm:8.4.19"],\
             ["resolve", "patch:resolve@npm%3A1.22.1#~builtin<compat/resolve>::version=1.22.1&hash=07638b"],\
             ["rollup", "npm:2.79.1"],\
-            ["sass", "npm:1.56.1"],\
+            ["sass", null],\
             ["stylus", null],\
             ["sugarss", null],\
             ["terser", null]\

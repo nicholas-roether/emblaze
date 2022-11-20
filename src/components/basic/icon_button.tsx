@@ -1,5 +1,6 @@
 import { Component, ComponentProps } from "solid-js";
 import { css, cls } from "~/utils/css";
+import { omitProps } from "~/utils/jsx";
 
 const styles = css((theme) => ({
 	iconButton: {
@@ -18,13 +19,12 @@ const styles = css((theme) => ({
 		"&:hover": {
 			backgroundColor: theme.colors.surface[0],
 			color: theme.colors.text.onSurface
-		},
-
-		"&.large": {
-			width: "2.6em",
-			height: "2.6em",
-			fontSize: "1.3em"
 		}
+	},
+	large: {
+		width: "2.6em",
+		height: "2.6em",
+		fontSize: "1.3em"
 	}
 }));
 
@@ -35,12 +35,12 @@ interface IconButtonProps extends ComponentProps<"button"> {
 const IconButton: Component<IconButtonProps> = (props) => {
 	return (
 		<button
-			{...props}
 			class={cls(
 				styles.iconButton,
-				{ large: props.large ?? false },
+				{ [styles.large]: props.large ?? false },
 				props.class
 			)}
+			{...omitProps(props, "class", "large")}
 		/>
 	);
 };

@@ -1,33 +1,70 @@
-import { Component, JSX, Match, Switch } from "solid-js";
-import { cls } from "~/utils/jsx";
-import styles from "./button.module.scss";
+import { Component, ComponentProps } from "solid-js";
+import { Dynamic } from "solid-js/web";
+import { A } from "solid-start";
+import { cls, css } from "~/utils/css";
+import { omitProps } from "~/utils/jsx";
 
-interface ButtonProps {
-	variant?: "surface" | "primary" | "secondary";
+const styles = css((theme) => ({
+	button: {
+		backgroundColor: theme.colors.primary[500],
+		fontFamily: theme.fonts.copy,
+		fontSize: theme.fontSizes.copy1,
+		color: theme.colors.text.onPrimary,
+		textDecoration: "none",
+		border: "none",
+		display: "inline-block",
+		cursor: "pointer",
+		transition: "background-color",
+		transitionDuration: theme.durations.medium,
+		fontWeight: 600,
+		padding: theme.spacing(1, 2),
+		borderRadius: theme.borderRadius,
+		boxShadow: theme.boxShadow(1),
+
+		"&:hover": {
+			backgroundColor: theme.colors.primary[700]
+		}
+	},
+	secondary: {
+		backgroundColor: theme.colors.secondary[500],
+		color: theme.colors.text.onSecondary,
+
+		"&:hover": {
+			backgroundColor: theme.colors.secondary[700]
+		}
+	},
+	large: {
+		padding: theme.spacing(2, 4)
+	}
+}));
+interface ButtonBaseProps {
+	variant?: "primary" | "secondary";
 	large?: boolean;
-	children?: JSX.Element;
-	href?: string;
 }
 
+interface NonLinkButtonProps extends ButtonBaseProps, ComponentProps<"button"> {
+	href?: undefined;
+}
+
+interface LinkButtonProps extends ButtonBaseProps, ComponentProps<typeof A> {
+	href: string;
+}
+
+type ButtonProps = NonLinkButtonProps | LinkButtonProps;
+
 const Button: Component<ButtonProps> = (props) => {
-	const className = () =>
-		cls(
-			styles.button,
-			[styles.secondary, props.variant == "secondary"],
-			[styles.surface, props.variant == "surface"],
-			[styles.large, props.large ?? false]
-		);
+	const element = () => (props.href ? "a" : "button");
+	const restProps = () => omitProps(props, "variant", "large", "href");
+
 	return (
-		<Switch>
-			<Match when={props.href}>
-				<a href={props.href} class={className()}>
-					{props.children}
-				</a>
-			</Match>
-			<Match when={!props.href}>
-				<button class={className()}>{props.children}</button>
-			</Match>
-		</Switch>
+		<Dynamic
+			component={element()}
+			class={cls(styles.button, {
+				[styles.secondary]: props.variant == "secondary",
+				[styles.large]: props.large ?? false
+			})}
+			{...(restProps() as ComponentProps<"a"> & ComponentProps<"button">)}
+		/>
 	);
 };
 

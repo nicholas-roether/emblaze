@@ -1,5 +1,6 @@
-import { Component } from "solid-js";
-import { css } from "~/utils/css";
+import { Component, ComponentProps } from "solid-js";
+import { cls, css } from "~/utils/css";
+import { omitProps } from "~/utils/jsx";
 
 const styles = css({
 	profile: {
@@ -7,13 +8,20 @@ const styles = css({
 	}
 });
 
-interface ProfileProps {
-	src?: string;
-	alt?: string;
+interface ProfileProps extends ComponentProps<"img"> {
+	alt: string;
 }
 
 const Profile: Component<ProfileProps> = (props) => {
-	return <img class={styles.profile} src={props.src} alt={props.alt} />;
+	return (
+		<img
+			class={cls(styles.profile)}
+			alt={props.alt}
+			{...omitProps(props, "class", "alt")}
+		/>
+	);
 };
 
 export default Profile;
+
+export type { ProfileProps };

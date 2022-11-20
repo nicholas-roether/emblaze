@@ -1,10 +1,7 @@
 import { MakeOptional } from "./types";
 
 type Breakpoint = "xs" | "sm" | "md" | "lg" | "xl" | "xxl";
-type FontSize =
-	| `heading${1 | 2 | 3 | 4 | 5 | 6}`
-	| `title${1 | 2}`
-	| `copy${1 | 2 | 3}`;
+type FontSize = `heading${1 | 2 | 3 | 4 | 5 | 6}` | `copy${1 | 2 | 3}`;
 type Shade = 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900;
 
 type Swatch = Record<Shade, string>;
@@ -62,14 +59,11 @@ const themeDataDefaults = {
 	spacingFactor: 8,
 	shadowFactor: 1.5,
 	fontSizes: {
-		title1: "4em",
-		title2: "2.5em",
-
-		heading1: "2em",
-		heading2: "1.8em",
-		heading3: "1.65em",
-		heading4: "1.5em",
-		heading5: "1.35em",
+		heading1: "2.2em",
+		heading2: "2em",
+		heading3: "1.85em",
+		heading4: "1.6em",
+		heading5: "1.4em",
 		heading6: "1.2em",
 
 		copy1: "1em",

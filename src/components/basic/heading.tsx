@@ -1,43 +1,45 @@
-import { Component, JSX, Match, Switch } from "solid-js";
-import { cls } from "~/utils/jsx";
+import { Component, ComponentProps } from "solid-js";
+import { Dynamic } from "solid-js/web";
+import { cls, css } from "~/utils/css";
+import { omitProps } from "~/utils/jsx";
 
-import styles from "./heading.module.scss";
+const styles = css((theme) => ({
+	heading: {
+		fontFamily: theme.fonts.heading,
+		marginBottom: theme.spacing(1)
+	},
+	size1: { fontSize: theme.fontSizes.heading1 },
+	size2: { fontSize: theme.fontSizes.heading2 },
+	size3: { fontSize: theme.fontSizes.heading3 },
+	size4: { fontSize: theme.fontSizes.heading4 },
+	size5: { fontSize: theme.fontSizes.heading5 },
+	size6: { fontSize: theme.fontSizes.heading6 },
+	noGutter: {
+		marginBottom: 0
+	}
+}));
 
-interface HeadingProps {
-	size?: "xs" | "s" | "m" | "l" | "xl";
+interface HeadingProps extends ComponentProps<`h${1 | 2 | 3 | 4 | 5 | 6}`> {
+	size?: 1 | 2 | 3 | 4 | 5 | 6;
 	noGutter?: boolean;
-	children?: JSX.Element;
 }
 
 const Heading: Component<HeadingProps> = (props) => {
+	const size = () => props.size ?? 1;
+	const sizeClassName = () =>
+		`size${size()}` as `size${ReturnType<typeof size>}`;
+	const element = () => `h${size()}` as `h${ReturnType<typeof size>}`;
 	return (
-		<Switch>
-			<Match when={props.size == "xl"}>
-				<h1 class={cls(styles.headingXL, [styles.gutter, !props.noGutter])}>
-					{props.children}
-				</h1>
-			</Match>
-			<Match when={props.size == "l"}>
-				<h2 class={cls(styles.headingL, [styles.gutter, !props.noGutter])}>
-					{props.children}
-				</h2>
-			</Match>
-			<Match when={props.size == "m"}>
-				<h3 class={cls(styles.headingM, [styles.gutter, !props.noGutter])}>
-					{props.children}
-				</h3>
-			</Match>
-			<Match when={props.size == "s"}>
-				<h4 class={cls(styles.headingS, [styles.gutter, !props.noGutter])}>
-					{props.children}
-				</h4>
-			</Match>
-			<Match when={props.size == "xs"}>
-				<h5 class={cls(styles.headingXS, [styles.gutter, !props.noGutter])}>
-					{props.children}
-				</h5>
-			</Match>
-		</Switch>
+		<Dynamic
+			component={element()}
+			class={cls(
+				styles.heading,
+				styles[sizeClassName()],
+				{ [styles.noGutter]: props.noGutter ?? false },
+				props.class
+			)}
+			{...omitProps(props, "class", "size", "noGutter")}
+		/>
 	);
 };
 

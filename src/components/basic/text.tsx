@@ -1,23 +1,21 @@
 import { Component, ComponentProps, Match, Switch } from "solid-js";
 import { cls, css } from "~/utils/css";
+import { omitProps } from "~/utils/jsx";
 
 const styles = css((theme) => ({
-	copy1: {
-		fontSize: theme.fontSizes.copy1
+	copy: {
+		fontFamily: theme.fonts.copy
 	},
-	copy2: {
-		fontSize: theme.fontSizes.copy2
-	},
-	copy3: {
-		fontSize: theme.fontSizes.copy3
-	},
+	size1: { fontSize: theme.fontSizes.copy1 },
+	size2: { fontSize: theme.fontSizes.copy2 },
+	size3: { fontSize: theme.fontSizes.copy3 },
 	paragraph: {
 		marginBottom: theme.spacing(2)
 	}
 }));
 
 interface TextBaseProps {
-	size?: `copy${1 | 2 | 3}`;
+	size?: 1 | 2 | 3;
 }
 interface TextParagraphProps extends TextBaseProps, ComponentProps<"p"> {
 	paragraph: true;
@@ -30,22 +28,27 @@ interface TextSpanProps extends TextBaseProps, ComponentProps<"span"> {
 type TextProps = TextParagraphProps | TextSpanProps;
 
 const Text: Component<TextProps> = (props) => {
+	const restProps = () => omitProps(props, "size", "paragraph");
+	const size = () => props.size ?? 1;
+	const sizeClassName = () =>
+		`size${size()}` as `size${ReturnType<typeof size>}`;
 	return (
 		<Switch>
 			<Match when={props.paragraph}>
 				<p
-					{...(props as TextParagraphProps)}
 					class={cls(
+						styles.copy,
 						styles.paragraph,
-						styles[props.size ?? "copy1"],
+						styles[sizeClassName()],
 						props.class
 					)}
+					{...(restProps() as TextParagraphProps)}
 				/>
 			</Match>
 			<Match when={!props.paragraph}>
 				<span
-					{...(props as TextSpanProps)}
-					class={cls(styles[props.size ?? "copy1"], props.class)}
+					{...(restProps() as TextSpanProps)}
+					class={cls(styles.copy, styles[sizeClassName()], props.class)}
 				/>
 			</Match>
 		</Switch>

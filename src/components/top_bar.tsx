@@ -1,8 +1,38 @@
 import { Component, Suspense, useContext } from "solid-js";
+import { css } from "~/utils/css";
 import Profile from "./basic/profile";
 import UserContext from "./context/user_context";
 
-import styles from "./top_bar.module.scss";
+const styles = css((theme) => ({
+	topBar: {
+		backgroundColor: theme.colors.surface[0],
+		color: theme.colors.text.onSurface,
+		height: "3em",
+		padding: theme.spacing(0.5),
+		paddingRight: theme.spacing(1),
+		display: "flex",
+		alignItems: "center",
+		position: "sticky",
+		top: 0,
+		width: "100%",
+		boxShadow: theme.boxShadow(1),
+
+		[theme.above("sm")]: {
+			backgroundColor: "transparent",
+			color: theme.colors.text.onBackground,
+			boxShadow: "none",
+			height: "3.5em",
+			padding: theme.spacing(1),
+			paddingRight: theme.spacing(2)
+		}
+	},
+	logo: {
+		height: "100%"
+	},
+	spacer: {
+		flex: 1
+	}
+}));
 
 const Logo: Component = () => (
 	<img class={styles.logo} src="/images/emblaze-icon.svg" alt="emblaze" />
@@ -13,7 +43,10 @@ const UserMenu: Component = () => {
 
 	return (
 		<Suspense fallback="Loading...">
-			<Profile src={user?.()?.profilePicture} alt={user?.()?.name} />
+			<Profile
+				src={user?.()?.profilePicture}
+				alt={user?.()?.name ?? "Loading..."}
+			/>
 		</Suspense>
 	);
 };
