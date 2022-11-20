@@ -5,6 +5,7 @@ import { isServer } from "solid-js/web";
 import theme from "~/theme";
 import { Theme } from "./theming";
 import { Component, Show } from "solid-js";
+import { Style } from "solid-start";
 
 jss.setup(preset());
 
@@ -104,12 +105,15 @@ function cls(...specifiers: ClassSpecifier[]) {
 const ComponentStyles: Component = () => {
 	return (
 		<Show when={isServer}>
-			<style
+			<Style
 				id="component-styles"
-				data-class-name-map={JSON.stringify(classNameMap)}
+				data-class-name-map={JSON.stringify(classNameMap).replaceAll(
+					'"',
+					"&quot;"
+				)}
 			>
 				{styleSheets.toString({ format: false })}
-			</style>
+			</Style>
 		</Show>
 	);
 };
