@@ -103,8 +103,13 @@ class Theme implements ThemeData {
 		this.colors = themeData.colors;
 	}
 
-	public spacing(size: number): string {
-		return `${this.spacingFactor * size}px`;
+	public spacing(...args: (number | string)[]): string {
+		return args
+			.map((arg) => {
+				if (typeof arg === "string") return arg;
+				return `${this.spacingFactor * arg}px`;
+			})
+			.join(" ");
 	}
 
 	public boxShadow(strength: number): string {
@@ -120,4 +125,13 @@ class Theme implements ThemeData {
 
 export { Theme };
 
-export type { ThemeData };
+export type {
+	ThemeData,
+	Breakpoint,
+	FontSize,
+	Shade,
+	Swatch,
+	Fonts,
+	Durations,
+	Colors
+};
