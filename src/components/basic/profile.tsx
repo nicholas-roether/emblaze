@@ -15,7 +15,7 @@ interface ProfileProps extends ComponentProps<"img"> {
 const Profile: Component<ProfileProps> = (props) => {
 	return (
 		<img
-			class={cls(styles.profile)}
+			class={cls(styles.profile, props.class)}
 			alt={props.alt}
 			{...omitProps(props, "class", "alt")}
 		/>

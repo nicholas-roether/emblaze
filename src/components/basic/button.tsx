@@ -54,15 +54,19 @@ type ButtonProps = NonLinkButtonProps | LinkButtonProps;
 
 const Button: Component<ButtonProps> = (props) => {
 	const element = () => (props.href ? "a" : "button");
-	const restProps = () => omitProps(props, "variant", "large", "href");
+	const restProps = () => omitProps(props, "variant", "large", "href", "class");
 
 	return (
 		<Dynamic
 			component={element()}
-			class={cls(styles.button, {
-				[styles.secondary]: props.variant == "secondary",
-				[styles.large]: props.large ?? false
-			})}
+			class={cls(
+				styles.button,
+				{
+					[styles.secondary]: props.variant == "secondary",
+					[styles.large]: props.large ?? false
+				},
+				props.class
+			)}
 			{...(restProps() as ComponentProps<"a"> & ComponentProps<"button">)}
 		/>
 	);

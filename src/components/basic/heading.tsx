@@ -38,7 +38,7 @@ const Heading: Component<HeadingProps> = (props) => {
 				{ [styles.noGutter]: props.noGutter ?? false },
 				props.class
 			)}
-			{...omitProps(props, "class", "size", "noGutter")}
+			{...omitProps(props, "class", "size", "noGutter", "class")}
 		/>
 	);
 };

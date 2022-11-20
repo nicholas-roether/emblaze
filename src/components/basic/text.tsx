@@ -28,7 +28,7 @@ interface TextSpanProps extends TextBaseProps, ComponentProps<"span"> {
 type TextProps = TextParagraphProps | TextSpanProps;
 
 const Text: Component<TextProps> = (props) => {
-	const restProps = () => omitProps(props, "size", "paragraph");
+	const restProps = () => omitProps(props, "size", "paragraph", "class");
 	const size = () => props.size ?? 1;
 	const sizeClassName = () =>
 		`size${size()}` as `size${ReturnType<typeof size>}`;
