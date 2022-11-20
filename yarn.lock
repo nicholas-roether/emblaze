@@ -3623,6 +3623,7 @@ __metadata:
     md5: ^2.3.0
     mongodb: ^4.11.0
     prettier: ^2.7.1
+    simplex-noise: ^4.0.1
     solid-js: ^1.6.0
     solid-start: ^0.2.0
     solid-start-node: ^0.2.0
@@ -6645,6 +6646,13 @@ __metadata:
   version: 3.0.7
   resolution: "signal-exit@npm:3.0.7"
   checksum: a2f098f247adc367dffc27845853e9959b9e88b01cb301658cfe4194352d8d2bb32e18467c786a7fe15f1d44b233ea35633d076d5e737870b7139949d1ab6318
+  languageName: node
+  linkType: hard
+
+"simplex-noise@npm:^4.0.1":
+  version: 4.0.1
+  resolution: "simplex-noise@npm:4.0.1"
+  checksum: b5458713337129016ae71182e20d2e2e0d01bb62c78cf180276dafe8a59bf1814a66aedd0dfc9bbb70cc549a9bc02f1c9773e4f222a2cff4692cd48e7a2b348b
   languageName: node
   linkType: hard
 

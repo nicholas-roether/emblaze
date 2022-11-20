@@ -41,6 +41,7 @@
     "jss-preset-default": "^10.9.2",
     "md5": "^2.3.0",
     "mongodb": "^4.11.0",
+    "simplex-noise": "^4.0.1",
     "solid-js": "^1.6.0",
     "solid-start": "^0.2.0",
     "tslib": "^2.4.1",

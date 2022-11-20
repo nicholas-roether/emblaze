@@ -47,6 +47,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["md5", "npm:2.3.0"],\
             ["mongodb", "npm:4.11.0"],\
             ["prettier", "npm:2.7.1"],\
+            ["simplex-noise", "npm:4.0.1"],\
             ["solid-js", "npm:1.6.2"],\
             ["solid-start", "virtual:a4f8ad8b59981df1764c0f92efec8e4b275351dcced314c41f360f174605694fc9dc63a9a17f923a317cecd5b77d0ab4f1f7cbc135031b039fdd0ae3161b5a4f#npm:0.2.5"],\
             ["solid-start-node", "virtual:a4f8ad8b59981df1764c0f92efec8e4b275351dcced314c41f360f174605694fc9dc63a9a17f923a317cecd5b77d0ab4f1f7cbc135031b039fdd0ae3161b5a4f#npm:0.2.5"],\
@@ -5144,6 +5145,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["md5", "npm:2.3.0"],\
             ["mongodb", "npm:4.11.0"],\
             ["prettier", "npm:2.7.1"],\
+            ["simplex-noise", "npm:4.0.1"],\
             ["solid-js", "npm:1.6.2"],\
             ["solid-start", "virtual:a4f8ad8b59981df1764c0f92efec8e4b275351dcced314c41f360f174605694fc9dc63a9a17f923a317cecd5b77d0ab4f1f7cbc135031b039fdd0ae3161b5a4f#npm:0.2.5"],\
             ["solid-start-node", "virtual:a4f8ad8b59981df1764c0f92efec8e4b275351dcced314c41f360f174605694fc9dc63a9a17f923a317cecd5b77d0ab4f1f7cbc135031b039fdd0ae3161b5a4f#npm:0.2.5"],\
@@ -8561,6 +8563,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/signal-exit-npm-3.0.7-bd270458a3-a2f098f247.zip/node_modules/signal-exit/",\
           "packageDependencies": [\
             ["signal-exit", "npm:3.0.7"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["simplex-noise", [\
+        ["npm:4.0.1", {\
+          "packageLocation": "./.yarn/cache/simplex-noise-npm-4.0.1-e1ad818044-b545871333.zip/node_modules/simplex-noise/",\
+          "packageDependencies": [\
+            ["simplex-noise", "npm:4.0.1"]\
           ],\
           "linkType": "HARD"\
         }]\
