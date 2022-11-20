@@ -1,5 +1,4 @@
-import { Component, ComponentProps } from "solid-js";
-import { Dynamic } from "solid-js/web";
+import { Component, ComponentProps, Match, Switch } from "solid-js";
 import { A } from "solid-start";
 import { cls, css } from "~/utils/css";
 import { omitProps } from "~/utils/jsx";
@@ -44,31 +43,58 @@ interface ButtonBaseProps {
 
 interface NonLinkButtonProps extends ButtonBaseProps, ComponentProps<"button"> {
 	href?: undefined;
+	external?: false;
 }
 
 interface LinkButtonProps extends ButtonBaseProps, ComponentProps<typeof A> {
 	href: string;
+	external?: false;
 }
 
-type ButtonProps = NonLinkButtonProps | LinkButtonProps;
+interface ExternalLinkButtonProps extends ButtonBaseProps, ComponentProps<"a"> {
+	href: string;
+	external: true;
+}
+
+type ButtonProps =
+	| NonLinkButtonProps
+	| LinkButtonProps
+	| ExternalLinkButtonProps;
 
 const Button: Component<ButtonProps> = (props) => {
-	const element = () => (props.href ? "a" : "button");
-	const restProps = () => omitProps(props, "variant", "large", "href", "class");
+	const restProps = () =>
+		omitProps(props, "variant", "large", "class", "children");
+	const classes = () =>
+		cls(
+			styles.button,
+			{
+				[styles.secondary]: props.variant == "secondary",
+				[styles.large]: props.large ?? false
+			},
+			props.class
+		);
 
 	return (
-		<Dynamic
-			component={element()}
-			class={cls(
-				styles.button,
-				{
-					[styles.secondary]: props.variant == "secondary",
-					[styles.large]: props.large ?? false
-				},
-				props.class
-			)}
-			{...(restProps() as ComponentProps<"a"> & ComponentProps<"button">)}
-		/>
+		<Switch>
+			<Match when={props.href && props.external}>
+				<a class={classes()} {...(restProps() as ComponentProps<"a">)}>
+					{props.children}
+				</a>
+			</Match>
+			<Match when={props.href}>
+				<A class={classes()} {...(restProps() as ComponentProps<typeof A>)}>
+					{props.children}
+				</A>
+			</Match>
+			<Match when={true}>
+				<button
+					class={classes()}
+					{...(restProps() as ComponentProps<"button">)}
+				>
+					{props.children}
+				</button>
+			</Match>
+		</Switch>
 	);
 };
 
