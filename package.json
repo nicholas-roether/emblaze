@@ -37,7 +37,6 @@
     "@solidjs/router": "^0.5.1",
     "axios": "^1.2.0",
     "dotenv": "^16.0.3",
-    "iron-session": "^6.3.1",
     "jss": "^10.9.2",
     "jss-preset-default": "^10.9.2",
     "md5": "^2.3.0",
@@ -47,9 +46,6 @@
     "solid-start": "^0.2.6",
     "tslib": "^2.4.1",
     "undici": "^5.13.0"
-  },
-  "resolutions": {
-    "iron-session/iron-webcrypto": "0.2.0"
   },
   "engines": {
     "node": ">=16"

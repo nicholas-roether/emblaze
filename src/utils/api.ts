@@ -1,8 +1,8 @@
 import { AxiosError } from "axios";
 import { APIEvent } from "solid-start";
-import { IronSession } from "iron-session";
+import { Session } from "solid-start/session/sessions";
+import { usingSession } from "~/services/session_storage";
 import { ValidationError } from "./schema";
-import { getSession } from "~/services/session";
 
 class APIError extends Error {
 	public readonly status: number;
@@ -17,7 +17,7 @@ class APIError extends Error {
 
 type HanderCallback = (
 	event: APIEvent,
-	session: IronSession
+	session: Session
 ) => Response | Promise<Response>;
 
 async function runHandlerCallback(
@@ -25,8 +25,11 @@ async function runHandlerCallback(
 	event: APIEvent
 ): Promise<Response> {
 	const responseHeaders = new Headers();
-	const session = await getSession(event.request, responseHeaders);
-	const res = await cb(event, session);
+	const res = await usingSession(
+		event.request.headers,
+		responseHeaders,
+		async (session) => await cb(event, session)
+	);
 	responseHeaders.forEach((value, name) => res.headers.append(name, value));
 	return res;
 }
@@ -77,7 +80,7 @@ function handleApiError(error: unknown) {
 }
 
 function handler(
-	cb: (event: APIEvent, session: IronSession) => Response | Promise<Response>
+	cb: (event: APIEvent, session: Session) => Response | Promise<Response>
 ): (event: APIEvent) => Promise<Response> {
 	return async (event) => {
 		try {
