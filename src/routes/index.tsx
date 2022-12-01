@@ -20,8 +20,8 @@ export default function Home() {
 }
 
 export function routeData() {
-	return createServerData$(async (_, { request }) => {
-		const login = await Login.from(request);
+	return createServerData$(async () => {
+		const login = await Login.get();
 		if (!login) throw redirect("/welcome");
 		const me = await Reddit.me(login);
 		userValidator.assert(me);

@@ -24,12 +24,10 @@ async function runHandlerCallback(
 	cb: HanderCallback,
 	event: APIEvent
 ): Promise<Response> {
-	const sessionResponse = new Response();
-	const session = await getSession(event.request, sessionResponse);
+	const responseHeaders = new Headers();
+	const session = await getSession(event.request, responseHeaders);
 	const res = await cb(event, session);
-	sessionResponse.headers.forEach((value, name) =>
-		res.headers.append(name, value)
-	);
+	responseHeaders.forEach((value, name) => res.headers.append(name, value));
 	return res;
 }
 

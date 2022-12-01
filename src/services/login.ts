@@ -1,15 +1,15 @@
 import { useServerContext } from "solid-start";
 import RedditAuth from "./reddit_auth";
-import { usingSession } from "./session_storage";
+import { getSession } from "./session";
 
 class Login {
-	static async from(request: Request): Promise<string | null> {
+	static async get(): Promise<string | null> {
 		const serverCtx = useServerContext();
-		return await usingSession(
-			request.headers,
-			serverCtx.responseHeaders,
-			(session) => RedditAuth.getOrRefreshLogin(session)
+		const session = await getSession(
+			serverCtx.request,
+			serverCtx.responseHeaders
 		);
+		return await RedditAuth.getOrRefreshLogin(session);
 	}
 }
 

@@ -19,8 +19,14 @@ const SESSION_OPTIONS: IronSessionOptions = {
 	}
 };
 
-async function getSession(req: Request, res: Response): Promise<IronSession> {
-	return getIronSession(req, res, SESSION_OPTIONS);
+async function getSession(
+	req: Request,
+	responseHeaders: Headers
+): Promise<IronSession> {
+	const res = new Response();
+	const session = await getIronSession(req, res, SESSION_OPTIONS);
+	res.headers.forEach(([name, value]) => responseHeaders.set(name, value));
+	return session;
 }
 
 export { getSession, SESSION_LIFETIME };
