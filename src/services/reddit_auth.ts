@@ -1,5 +1,5 @@
 import crypto from "crypto";
-import { IronSession } from "iron-session";
+import { Session } from "solid-start/session/sessions";
 import axios, { AxiosError, AxiosRequestConfig } from "axios";
 import schema, { Validator } from "~/utils/schema";
 import DB from "./database";
@@ -70,14 +70,11 @@ class RedditAuth {
 		};
 	}
 
-	public static async createLoginRedirect(
-		session: IronSession
-	): Promise<string> {
+	public static async createLoginRedirect(session: Session): Promise<string> {
 		if (await this.getOrRefreshLogin(session)) return this.SUCCESS_URI;
 
 		const sessionIdentifer = this.generateSessionIdentifier();
-		session.identifier = sessionIdentifer;
-		await session.save();
+		session.set("identifier", sessionIdentifer);
 
 		const loginRedirect = new URL(this.ENDPOINT + "/v1/authorize");
 		loginRedirect.searchParams.set("client_id", env().REDDIT_CLIENT_ID);
@@ -90,22 +87,22 @@ class RedditAuth {
 	}
 
 	public static async authorizeUser(
-		session: IronSession,
+		session: Session,
 		sessionIdentifier: string,
 		accessCode: string
 	): Promise<void> {
 		const db = await DB.open();
 
-		if (!session.identifier)
-			throw new APIError(400, "Missing session identifier");
-		if (session.identifier !== sessionIdentifier)
+		const currentSessionIdentifier = session.get("identifier");
+		if (typeof currentSessionIdentifier !== "string")
+			throw new APIError(400, "Malformed session identifier");
+		if (currentSessionIdentifier !== sessionIdentifier)
 			throw new APIError(403, "Incorrect session identifier");
-
-		session.identifier = undefined;
-		await session.save();
 
 		const newLogin = await this.getAccessToken(accessCode);
 		const redditId = await this.getRedditId(newLogin.accessToken);
+
+		session.unset("identifier");
 
 		const userId = await db.createOrReplaceUser({
 			redditId,
@@ -114,23 +111,23 @@ class RedditAuth {
 			refreshToken: newLogin.refreshToken,
 			scope: this.OAUTH_SCOPES
 		});
-		await this.saveLogin(session, userId);
+		this.saveLogin(session, userId);
 	}
 
-	public static async logout(session: IronSession): Promise<void> {
+	public static async logout(session: Session): Promise<void> {
 		const db = await DB.open();
 		const userId = this.getLoggedInUser(session);
-		await this.deleteLogin(session);
+		this.deleteLogin(session);
 		if (userId) await db.deleteUser(userId);
 	}
 
 	public static async getOrRefreshLogin(
-		session: IronSession
+		session: Session
 	): Promise<string | null> {
 		return this.getLogin(session) ?? (await this.attemptLoginRefresh(session));
 	}
 
-	public static async getLogin(session: IronSession): Promise<string | null> {
+	public static async getLogin(session: Session): Promise<string | null> {
 		const db = await DB.open();
 
 		const userId = this.getLoggedInUser(session);
@@ -144,7 +141,7 @@ class RedditAuth {
 	}
 
 	public static async attemptLoginRefresh(
-		session: IronSession
+		session: Session
 	): Promise<string | null> {
 		const db = await DB.open();
 
@@ -158,7 +155,7 @@ class RedditAuth {
 		if (!login) return null;
 
 		await db.replaceUserAccessToken(userId, login.accessToken, login.expiresAt);
-		await this.saveLogin(session, userId);
+		this.saveLogin(session, userId);
 
 		return login.accessToken;
 	}
@@ -238,18 +235,18 @@ class RedditAuth {
 		}
 	}
 
-	private static getLoggedInUser(session: IronSession): string | null {
-		return session.userId ?? null;
+	private static getLoggedInUser(session: Session): string | null {
+		const userId = session.get("userId");
+		if (typeof userId !== "string") return null;
+		return userId;
 	}
 
-	private static async saveLogin(session: IronSession, userId: string) {
-		session.userId = userId;
-		await session.save();
+	private static saveLogin(session: Session, userId: string) {
+		session.set("userId", userId);
 	}
 
-	private static async deleteLogin(session: IronSession) {
-		session.userId = undefined;
-		await session.save();
+	private static deleteLogin(session: Session) {
+		session.unset("userId");
 	}
 
 	private static generateSessionIdentifier() {
