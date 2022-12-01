@@ -4853,15 +4853,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["ieee754", "npm:1.2.1"]\
           ],\
           "linkType": "HARD"\
-        }],\
-        ["npm:6.0.3", {\
-          "packageLocation": "./.yarn/cache/buffer-npm-6.0.3-cd90dfedfe-5ad23293d9.zip/node_modules/buffer/",\
-          "packageDependencies": [\
-            ["buffer", "npm:6.0.3"],\
-            ["base64-js", "npm:1.5.1"],\
-            ["ieee754", "npm:1.2.1"]\
-          ],\
-          "linkType": "HARD"\
         }]\
       ]],\
       ["buffer-from", [\
@@ -7139,7 +7130,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/node", "npm:17.0.45"],\
             ["cookie", "npm:0.5.0"],\
             ["express", null],\
-            ["iron-webcrypto", "npm:0.2.6"],\
+            ["iron-webcrypto", "npm:0.2.0"],\
             ["koa", null],\
             ["next", null]\
           ],\
@@ -7153,11 +7144,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["iron-webcrypto", [\
-        ["npm:0.2.6", {\
-          "packageLocation": "./.yarn/cache/iron-webcrypto-npm-0.2.6-8c13b11192-8b32e4f494.zip/node_modules/iron-webcrypto/",\
+        ["npm:0.2.0", {\
+          "packageLocation": "./.yarn/cache/iron-webcrypto-npm-0.2.0-c1d5749988-7808e12512.zip/node_modules/iron-webcrypto/",\
           "packageDependencies": [\
-            ["iron-webcrypto", "npm:0.2.6"],\
-            ["buffer", "npm:6.0.3"]\
+            ["iron-webcrypto", "npm:0.2.0"]\
           ],\
           "linkType": "HARD"\
         }]\
