@@ -7,7 +7,7 @@
   "author": "Nicholas Roether <nicholas.roether@t-online.de>",
   "license": "MIT",
   "private": true,
-  "packageManager": "yarn@3.2.4",
+  "packageManager": "yarn@3.3.0",
   "scripts": {
     "dev": "vite dev",
     "build": "solid-start build",
@@ -17,35 +17,35 @@
   "type": "module",
   "devDependencies": {
     "@types/md5": "^2.3.2",
-    "@types/node": "^18.11.10",
-    "@typescript-eslint/eslint-plugin": "^5.45.0",
-    "@typescript-eslint/parser": "^5.45.0",
-    "eslint": "^8.28.0",
+    "@types/node": "^18.11.13",
+    "@typescript-eslint/eslint-plugin": "^5.46.0",
+    "@typescript-eslint/parser": "^5.46.0",
+    "eslint": "^8.29.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-import-resolver-typescript": "^3.5.2",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-jsx-a11y": "^6.6.1",
     "eslint-plugin-solid": "^0.9.1",
-    "prettier": "^2.8.0",
-    "solid-start-node": "^0.2.6",
-    "solid-start-vercel": "^0.2.6",
-    "typescript": "^4.9.3",
-    "vite": "^3.2.4"
+    "prettier": "^2.8.1",
+    "solid-start-node": "^0.2.7",
+    "solid-start-vercel": "^0.2.7",
+    "typescript": "4.9.3",
+    "vite": "^4.0.0"
   },
   "dependencies": {
     "@solidjs/meta": "^0.28.2",
     "@solidjs/router": "^0.5.1",
-    "axios": "^1.2.0",
+    "axios": "^1.2.1",
     "dotenv": "^16.0.3",
     "jss": "^10.9.2",
     "jss-preset-default": "^10.9.2",
     "md5": "^2.3.0",
     "mongodb": "^4.12.1",
     "simplex-noise": "^4.0.1",
-    "solid-js": "^1.6.2",
-    "solid-start": "^0.2.6",
+    "solid-js": "^1.6.4",
+    "solid-start": "^0.2.7",
     "tslib": "^2.4.1",
-    "undici": "^5.13.0"
+    "undici": "^5.14.0"
   },
   "engines": {
     "node": ">=16"
